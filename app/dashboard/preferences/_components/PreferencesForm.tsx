@@ -10,7 +10,7 @@ export default function PreferencesForm() {
       <SelectEmails />
       <SelectTimezone />
       <FrequencySelction />
-      <Button>Save Changes</Button>
+      <Button variant={"alternative"}>Save Changes</Button>
     </form>
   );
 }

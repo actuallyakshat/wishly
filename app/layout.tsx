@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "./_components/Navbar";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider>{children}</ClerkProvider>
+          <ClerkProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,29 +1,40 @@
+"use client";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import React from "react";
-
+import { useClientAuth } from "@/providers/auth-provider";
+import React, { useEffect } from "react";
 const option = [
   {
     id: "onDate",
     name: "On date",
     description: "You will receive a notification on the date of the event",
-    value: "onDate",
+    value: "emailOnDate",
   },
   {
     id: "oneDayBefore",
     name: "One day before",
     description: "You will receive a notification one day before the event",
-    value: "oneDayBefore",
+    value: "emailOneDayBefore",
   },
   {
     id: "oneWeekBefore",
     name: "One week before",
     description: "You will receive a notification one week before the event",
-    value: "oneWeekBefore",
+    value: "emailOneWeekBefore",
   },
 ];
 
 export default function FrequencySelction() {
+  const { user } = useClientAuth();
+
+  useEffect(() => {
+    if (user?.emailPreferences) {
+      console.log(user?.emailPreferences);
+    }
+  }, [user]);
+
+  if (!user) return null;
+
   return (
     <div className="space-y-3">
       <Label className="text-md">
@@ -33,9 +44,12 @@ export default function FrequencySelction() {
         </p>
       </Label>
       <div className="space-y-4">
-        {option.map((item) => (
+        {option.map((item: any) => (
           <div className="items-top flex space-x-2" key={item.id}>
-            <Checkbox id={item.id} />
+            <Checkbox
+              id={item.id}
+              checked={user && user.emailPreferences[item.value]}
+            />
             <div className="grid gap-1.5 leading-none">
               <label
                 htmlFor={item.id}

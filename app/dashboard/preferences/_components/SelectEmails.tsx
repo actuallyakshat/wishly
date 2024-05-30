@@ -33,6 +33,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useClientAuth } from "@/providers/auth-provider";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 const emails = [
@@ -55,11 +56,13 @@ const emails = [
 
 export function SelectEmails() {
   const [emailsDemo, setEmailsDemo] = React.useState(emails);
-  const { user } = useUser();
+  const { user } = useClientAuth();
 
   useEffect(() => {
     console.log(emailsDemo);
   }, [emailsDemo]);
+
+  if (!user) return <></>;
 
   return (
     <div className="space-y-3">
@@ -73,13 +76,13 @@ export function SelectEmails() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex items-center gap-2">
-            {user?.primaryEmailAddress?.emailAddress} <ChevronDown size={16} />
+            {user?.primaryEmail} <ChevronDown size={16} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
+        <DropdownMenuContent className="w-fit">
           <DropdownMenuLabel>Emails</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {emailsDemo.map((email) => (
+          {user.emails.map((email) => (
             <DropdownMenuCheckboxItem
               key={email.id}
               checked={email.active}

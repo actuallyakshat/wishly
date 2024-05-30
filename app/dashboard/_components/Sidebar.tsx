@@ -28,7 +28,12 @@ export default function Sidebar() {
   return (
     <div className="w-72 fixed left-0 top-0 h-screen border-r flex flex-col justify-between pt-10 pb-4">
       <div>
-        <h1 className="text-3xl font-black px-4 mb-5">Wishly</h1>
+        <Link
+          href={"/"}
+          className="text-3xl font-black px-4 mb-5 bg-gradient-to-br from-lime-400 to-lime-600 text-transparent bg-clip-text inline-block"
+        >
+          Wishly
+        </Link>
         {sidebarItems.map((item) => (
           <Link
             href={item.href}
@@ -55,7 +60,7 @@ function SignOut() {
   return (
     <SignOutButton>
       <Button
-        className="w-full hover:bg-secondary/40 flex items-center justify-start gap-2 p-4 text-muted-foreground"
+        className="w-full hover:bg-secondary/40 flex items-center justify-start gap-2 p-4 text-muted-foreground rounded-none"
         variant={"ghost"}
         size={"custom"}
       >

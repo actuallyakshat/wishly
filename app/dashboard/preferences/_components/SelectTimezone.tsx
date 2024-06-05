@@ -52,9 +52,14 @@ type Timezone = {
   label: string;
 };
 
-export default function SelectTimezone() {
+export default function SelectTimezone({
+  timezoneValue,
+  setTimezone,
+}: {
+  timezoneValue: string;
+  setTimezone: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("Asia/Kolkata");
   const [timezoneList, setTimezoneList] = React.useState<Timezone[]>(timezones);
 
   return (
@@ -72,15 +77,16 @@ export default function SelectTimezone() {
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[200px] justify-between"
+            className="w-full justify-between"
           >
-            {value
-              ? timezoneList.find((timezone) => timezone.value == value)?.label
+            {timezoneValue
+              ? timezoneList.find((timezone) => timezone.value == timezoneValue)
+                  ?.label
               : "Select timezone..."}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="w-[24rem] p-0">
           <Command>
             <CommandInput placeholder="Search timezone..." />
             <CommandEmpty>No timezone found.</CommandEmpty>
@@ -91,14 +97,18 @@ export default function SelectTimezone() {
                     key={timezone.value}
                     value={timezone.value}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
+                      setTimezone(
+                        currentValue === timezoneValue ? "" : currentValue,
+                      );
                       setOpen(false);
                     }}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === timezone.value ? "opacity-100" : "opacity-0"
+                        timezoneValue === timezone.value
+                          ? "opacity-100"
+                          : "opacity-0",
                       )}
                     />
                     {timezone.label}

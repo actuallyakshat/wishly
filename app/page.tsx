@@ -13,16 +13,16 @@ export default async function Home() {
   return (
     <main>
       <Navbar />
-      <section className="px-6 pt-40 pb-20 min-h-screen h-full grid grid-cols-2 gap-8 mx-auto herobg">
-        <div className="col-span-2 xl:col-span-1 flex flex-col gap-4 xl:pl-20 items-center xl:items-start justify-center">
-          <h1 className="font-black text-5xl md:text-7xl leading-[1.10] max-w-xl text-center xl:text-start">
+      <section className="herobg mx-auto grid h-full min-h-screen grid-cols-2 gap-8 px-6 pb-20 pt-40">
+        <div className="col-span-2 flex flex-col items-center justify-center gap-4 xl:col-span-1 xl:items-start xl:pl-20">
+          <h1 className="max-w-xl text-center text-5xl font-black leading-[1.10] md:text-7xl xl:text-start">
             <span className={`${headingGradient} mr-2`}>We Remember, </span>
             So That You
             <span className={`${headingGradient} ml-2`}>
               Don&apos;t Have To.
             </span>
           </h1>
-          <p className="text-muted-foreground font-medium text-lg max-w-lg text-center xl:text-start">
+          <p className="max-w-lg text-center text-lg font-medium text-muted-foreground xl:text-start">
             Wishly helps you set reminder for those special days you can&apos;t
             afford to forget. Get started today for free.
           </p>
@@ -34,13 +34,13 @@ export default async function Home() {
             </Link>
           </div>
         </div>
-        <div className="col-span-1 xl:flex items-center justify-center h-full hidden ">
+        <div className="col-span-1 hidden h-full items-center justify-center xl:flex">
           <Image
             src="/hero-graphic.svg"
             alt={"Person marking a calendar"}
             width={1000}
             height={500}
-            className="max-w-[45rem] w-full"
+            className="w-full max-w-[45rem]"
           />
         </div>
       </section>

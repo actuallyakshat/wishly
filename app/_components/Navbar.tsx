@@ -12,11 +12,11 @@ import { currentUser } from "@clerk/nextjs/server";
 export default async function Navbar() {
   const user = await currentUser();
   return (
-    <nav className="w-full border-b fixed bg-background h-16 top-0 left-0 z-50">
-      <div className="flex items-center justify-between w-full max-w-screen-xl h-full px-4 mx-auto">
+    <nav className="fixed left-0 top-0 z-50 h-16 w-full border-b bg-background">
+      <div className="mx-auto flex h-full w-full max-w-screen-xl items-center justify-between px-4">
         <Link
           href={user ? "/dashboard" : "/"}
-          className="font-extrabold text-xl"
+          className="text-xl font-extrabold"
         >
           Wishly
         </Link>
@@ -31,7 +31,7 @@ export default async function Navbar() {
           </SignedIn>
           <SignedOut>
             <SignInButton>
-              <Button variant={"ghost"} className="font-medium text-sm">
+              <Button variant={"ghost"} className="text-sm font-medium">
                 Sign In
               </Button>
             </SignInButton>

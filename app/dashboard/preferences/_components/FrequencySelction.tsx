@@ -2,7 +2,10 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useClientAuth } from "@/providers/auth-provider";
+import { EmailPreference } from "@prisma/client";
+import { ObjectEnumValue } from "@prisma/client/runtime/library";
 import React, { useEffect } from "react";
+
 const option = [
   {
     id: "onDate",
@@ -24,16 +27,29 @@ const option = [
   },
 ];
 
-export default function FrequencySelction() {
+export default function FrequencySelction({
+  emailFrequency,
+  setEmailFrequency,
+}: {
+  emailFrequency: EmailPreference;
+  setEmailFrequency: React.Dispatch<React.SetStateAction<EmailPreference>>;
+}) {
   const { user } = useClientAuth();
+  const optionsList = option.map((item: any) => ({
+    ...item,
+    //@ts-ignore
+    checked: user && user.emailPreferences[item.value],
+  }));
+  const [options, setOptions] = React.useState(optionsList);
 
   useEffect(() => {
-    if (user?.emailPreferences) {
-      console.log(user?.emailPreferences);
-    }
-  }, [user]);
+    const newFrequency = options.reduce((acc, option) => {
+      acc[option.value] = option.checked;
+      return acc;
+    }, {} as EmailPreference);
 
-  if (!user) return null;
+    setEmailFrequency(newFrequency);
+  }, [options, setEmailFrequency]);
 
   return (
     <div className="space-y-3">
@@ -44,11 +60,22 @@ export default function FrequencySelction() {
         </p>
       </Label>
       <div className="space-y-4">
-        {option.map((item: any) => (
+        {options.map((item: any) => (
           <div className="items-top flex space-x-2" key={item.id}>
             <Checkbox
               id={item.id}
-              checked={user && user.emailPreferences[item.value]}
+              checked={item.checked}
+              onCheckedChange={(checked) => {
+                options.map((option) => {
+                  if (option.value === item.value) {
+                    setOptions((options) =>
+                      options.map((o) =>
+                        o.value === item.value ? { ...o, checked: checked } : o,
+                      ),
+                    );
+                  }
+                });
+              }}
             />
             <div className="grid gap-1.5 leading-none">
               <label

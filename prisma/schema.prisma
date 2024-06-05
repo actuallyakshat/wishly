@@ -17,18 +17,22 @@ model User {
   emails           Email[]
   events           Event[]
   emailPreferences EmailPreference?
+  categories       Category[]
 }
 
 model Event {
-  id         Int       @id @default(autoincrement())
-  name       String
-  date       DateTime
-  userId     Int
-  user       User      @relation(fields: [userId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
+  id              Int       @id @default(autoincrement())
+  name            String
+  date            DateTime
+  description     String?
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  category        Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId      Int?
+  disableReminder Boolean   @default(false)
+  reccuring       Boolean   @default(false)
 }
 
 model EmailPreference {
@@ -37,12 +41,14 @@ model EmailPreference {
   emailOneWeekBefore Boolean @default(false)
   emailOneDayBefore  Boolean @default(false)
   emailOnDate        Boolean @default(true)
-  user               User    @relation(fields: [userId], references: [id])
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
   id        Int      @id @default(autoincrement())
   name      String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   events    Event[]
@@ -54,6 +60,6 @@ model Email {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
 }

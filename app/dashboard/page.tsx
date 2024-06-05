@@ -1,13 +1,13 @@
-"use client";
-import { useClientAuth } from "@/providers/auth-provider";
 import React from "react";
+import UpcomingEvents from "./_components/UpcomingEvents";
+import AllEvents from "./_components/AllEvents";
+import EvenetsByCategory from "./_components/EvenetsByCategory";
 export default function Dashboard() {
-  const { isAuthenticated } = useClientAuth();
   return (
-    <main>
-      <section className="text-3xl font-extrabold">
-        <h1>Authenticated {isAuthenticated ? "✅" : "❌"}</h1>
-      </section>
+    <main className="flex flex-col gap-8 p-12">
+      <UpcomingEvents />
+      <AllEvents />
+      <EvenetsByCategory />
     </main>
   );
 }

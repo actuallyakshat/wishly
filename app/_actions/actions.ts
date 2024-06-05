@@ -13,6 +13,7 @@ export async function getUser(email: string) {
         events: true,
         emails: true,
         emailPreferences: true,
+        categories: true,
       },
     });
     if (!user) {
@@ -20,25 +21,27 @@ export async function getUser(email: string) {
         data: {
           primaryEmail: email,
           timeZone: "Asia/Kolkata",
+          emails: {
+            create: {
+              email: email,
+            },
+          },
+          emailPreferences: {
+            create: {
+              emailOneWeekBefore: false,
+              emailOneDayBefore: false,
+              emailOnDate: true,
+            },
+          },
         },
-      });
-      await prisma.emailPreference.create({
-        data: {
-          userId: createdUser.id,
-          emailOneWeekBefore: false,
-          emailOneDayBefore: false,
-          emailOnDate: true,
-        },
-      });
-      const newUser = await prisma.user.findFirst({
-        where: { primaryEmail: email },
         include: {
           events: true,
           emails: true,
           emailPreferences: true,
+          categories: true,
         },
       });
-      return { status: 201, user: newUser };
+      return { status: 201, user: createdUser };
     }
     return { status: 200, user };
   } catch (error) {

@@ -3,9 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { ThemeToggler } from "./ThemeToggler";
-import { CalendarHeart, LogOut, Settings2 } from "lucide-react";
+import { CalendarHeart, LogOut, Plus, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@clerk/nextjs";
+import CreateEventButton from "./CreateEventButton";
 
 const sidebarItems = [
   {
@@ -16,6 +17,12 @@ const sidebarItems = [
   },
   {
     id: 2,
+    name: "Add Event",
+    icon: <Plus />,
+    href: "/dashboard/add-event",
+  },
+  {
+    id: 3,
     name: "Preferences",
     icon: <Settings2 />,
     href: "/dashboard/preferences",
@@ -24,21 +31,21 @@ const sidebarItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  console.log(pathname);
   return (
-    <div className="w-72 fixed left-0 top-0 h-screen border-r flex flex-col justify-between pt-10 pb-4">
+    <div className="fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r pb-4 pt-10">
       <div>
         <Link
           href={"/"}
-          className="text-3xl font-black px-4 mb-5 bg-gradient-to-br from-lime-400 to-lime-600 text-transparent bg-clip-text inline-block"
+          className="mb-5 inline-block w-full bg-gradient-to-br from-lime-400 to-lime-600 bg-clip-text px-4 text-center text-4xl font-black text-transparent"
         >
           Wishly
         </Link>
+        <div className="flex w-full items-center justify-center"></div>
         {sidebarItems.map((item) => (
           <Link
             href={item.href}
             key={item.id}
-            className={`flex items-center gap-3 p-4 text-sm font-medium hover:bg-secondary/30 cursor-pointer ${
+            className={`flex cursor-pointer items-center gap-3 p-4 text-sm font-medium hover:bg-secondary/30 ${
               pathname == item.href
                 ? "bg-secondary/50"
                 : "text-muted-foreground"
@@ -60,7 +67,7 @@ function SignOut() {
   return (
     <SignOutButton>
       <Button
-        className="w-full hover:bg-secondary/40 flex items-center justify-start gap-2 p-4 text-muted-foreground rounded-none"
+        className="flex w-full items-center justify-start gap-2 rounded-none p-4 text-muted-foreground hover:bg-secondary/40"
         variant={"ghost"}
         size={"custom"}
       >

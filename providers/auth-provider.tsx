@@ -1,7 +1,8 @@
 "use client";
 import { getUser } from "@/app/_actions/actions";
+import Loading from "@/app/loading";
 import { useUser } from "@clerk/nextjs";
-import { User } from "@prisma/client";
+import { Email, EmailPreference, User } from "@prisma/client";
 import React, {
   createContext,
   useState,
@@ -17,8 +18,8 @@ interface AuthContextType {
 }
 
 interface clientUserType extends User {
-  emailPreferences: any[];
-  emails: any[];
+  emailPreferences: EmailPreference;
+  emails: Email[];
   timeZone: string | null;
 }
 
@@ -40,7 +41,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const getDetailsHandler = async () => {
     try {
       const response = await getUser(
-        clerkUser?.primaryEmailAddress?.emailAddress as string
+        clerkUser?.primaryEmailAddress?.emailAddress as string,
       );
       setClientUser(response.user);
       setIsAuthenticated(true);
@@ -55,16 +56,16 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     if (clerkUser) {
       getDetailsHandler();
+    } else {
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clerkUser]);
 
   if (loading) {
-    return (
-      <div className="fixed z-[51] inset-0 bg-background flex items-center justify-center">
-        <h1 className="font-bold text-3xl">Loading Wishly</h1>
-      </div>
-    );
+    console.log("loading", loading);
+    console.log("isAuthenticated", isAuthenticated);
+    return <Loading />;
   }
 
   return (

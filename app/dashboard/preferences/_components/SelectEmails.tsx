@@ -34,33 +34,32 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useClientAuth } from "@/providers/auth-provider";
+import generateOTP from "@/lib/generateOtp";
+import { sendotp, verifyotp } from "@/lib/email-methods/handleOtp";
+import { addEmail } from "../_actions/actions";
+import { Email } from "@prisma/client";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
-const emails = [
-  {
-    id: 1,
-    email: "test@test.com",
-    active: true,
-  },
-  {
-    id: 2,
-    email: "test2@test.com",
-    active: false,
-  },
-  {
-    id: 3,
-    email: "test3@test.com",
-    active: true,
-  },
-];
 
-export function SelectEmails() {
-  const [emailsDemo, setEmailsDemo] = React.useState(emails);
+export function SelectEmails({
+  allEmails,
+  setAllEmails,
+}: {
+  allEmails: Email[];
+  setAllEmails: React.Dispatch<React.SetStateAction<Email[]>>;
+}) {
   const { user } = useClientAuth();
 
   useEffect(() => {
-    console.log(emailsDemo);
-  }, [emailsDemo]);
+    console.log("allEmails", allEmails);
+  }, [allEmails]);
+
+  const handleCheckedChange = (emailId: string, checked: boolean) => {
+    console.log(`Toggling email ID ${emailId} to ${checked}`);
+    setAllEmails((emails) =>
+      emails.map((e) => (e.email === emailId ? { ...e, active: checked } : e)),
+    );
+  };
 
   if (!user) return <></>;
 
@@ -75,45 +74,51 @@ export function SelectEmails() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex items-center gap-2">
-            {user?.primaryEmail} <ChevronDown size={16} />
+          <Button
+            variant="outline"
+            className="flex w-full items-center justify-between gap-2"
+          >
+            {allEmails.find((email) => email.active)?.email ||
+              "No Email Selected"}{" "}
+            <ChevronDown size={16} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-fit">
+        <DropdownMenuContent className="w-[24rem]">
           <DropdownMenuLabel>Emails</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {user.emails.map((email) => (
+          {allEmails.map((email) => (
             <DropdownMenuCheckboxItem
               key={email.id}
               checked={email.active}
-              onCheckedChange={(checked) => {
-                setEmailsDemo((emails) =>
-                  emails.map((e) =>
-                    e.id === email.id ? { ...e, active: checked } : e
-                  )
-                );
-              }}
+              onCheckedChange={(checked) =>
+                handleCheckedChange(email.email, checked)
+              }
             >
               {email.email}
             </DropdownMenuCheckboxItem>
           ))}
           <DropdownMenuSeparator />
-          <AddEmailModal />
+          <AddEmailModal setAllEmails={setAllEmails} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
   );
 }
 
-function AddEmailModal() {
+function AddEmailModal({
+  setAllEmails,
+}: {
+  setAllEmails: React.Dispatch<React.SetStateAction<Email[] | []>>;
+}) {
   const [open, setOpen] = React.useState(false);
   const [verifyOTP, setVerifyOTP] = React.useState(false);
+  const [email, setEmail] = React.useState("");
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <DropdownMenuItem
-          className="flex items-center justify-center gap-1 w-full"
+          className="flex w-full items-center justify-center gap-1"
           onClick={(e) => {
             e.preventDefault();
             setOpen(true);
@@ -123,7 +128,19 @@ function AddEmailModal() {
         </DropdownMenuItem>
       </DialogTrigger>
       <DialogContent>
-        {verifyOTP ? <VerifyEmail /> : <AddEmail setVerifyOTP={setVerifyOTP} />}
+        {verifyOTP ? (
+          <VerifyEmail
+            email={email}
+            setAllEmails={setAllEmails}
+            setAddEmailModal={setOpen}
+          />
+        ) : (
+          <AddEmail
+            setEmail={setEmail}
+            email={email}
+            setVerifyOTP={setVerifyOTP}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
@@ -131,9 +148,22 @@ function AddEmailModal() {
 
 function AddEmail({
   setVerifyOTP,
+  email,
+  setEmail,
 }: {
   setVerifyOTP: React.Dispatch<React.SetStateAction<boolean>>;
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [loading, setLoading] = React.useState(false);
+  const emailRef = React.useRef<HTMLInputElement>(null);
+  async function handleAddEmail() {
+    if (!email) return;
+    setLoading(true);
+    await sendotp(email);
+    setLoading(false);
+    setVerifyOTP(true);
+  }
   return (
     <>
       <DialogHeader>
@@ -145,21 +175,58 @@ function AddEmail({
 
       <form
         onSubmit={(e) => {
+          console.log("clicked");
           e.preventDefault();
-          setVerifyOTP(true);
+          handleAddEmail();
         }}
       >
         <div className="space-y-3">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" placeholder="johndoe@example.com" type="email" />
-          <Button type="button">Add Email</Button>
+          <Input
+            id="email"
+            placeholder="johndoe@example.com"
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Button onClick={handleAddEmail}>
+            {loading ? "Loading" : "Add Email"}
+          </Button>
         </div>
       </form>
     </>
   );
 }
 
-function VerifyEmail() {
+function VerifyEmail({
+  email,
+  setAllEmails,
+  setAddEmailModal,
+}: {
+  email: string;
+  setAllEmails: React.Dispatch<React.SetStateAction<Email[]>>;
+  setAddEmailModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const { user } = useClientAuth();
+  const userId = user?.id;
+  const [value, setValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const handleVerification = async () => {
+    try {
+      if (!user) return;
+      setLoading(true);
+      const isValid = await verifyotp(email, Number(value));
+      if (isValid) {
+        const response = await addEmail(email, userId!);
+        setAllEmails((emails) => [...emails, response]);
+        setAddEmailModal(false);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <DialogHeader>
@@ -168,7 +235,7 @@ function VerifyEmail() {
           Enter the 6-digit code sent to your email address.
         </DialogDescription>
       </DialogHeader>
-      <InputOTP maxLength={6} onChange={(value: string) => console.log(value)}>
+      <InputOTP maxLength={6} onChange={(value: string) => setValue(value)}>
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -182,7 +249,9 @@ function VerifyEmail() {
         </InputOTPGroup>
       </InputOTP>
       <DialogFooter>
-        <Button type="submit">Submit</Button>
+        <Button onClick={handleVerification}>
+          {loading ? "Loading" : "Submit"}
+        </Button>
       </DialogFooter>
     </>
   );

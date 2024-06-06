@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button";
 import { Event } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 
 interface Category {
@@ -10,10 +12,20 @@ interface Category {
 export default function EventsByCategory({ data }: { data: Category[] }) {
   return (
     <section>
-      <h1 className="text-2xl font-semibold">Events By Category</h1>
-      <h4 className="text-sm text-muted-foreground">
-        Events organized by category.
-      </h4>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Events By Category</h1>
+          <h4 className="text-sm text-muted-foreground">
+            Events organized by category.
+          </h4>
+        </div>
+        <Link href={"/dashboard/manage-categories"}>
+          <Button variant={"link"} className="h-fit p-0">
+            Manage Categories
+          </Button>
+        </Link>
+      </div>
+
       <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {data?.map((category: Category) => (
           <div

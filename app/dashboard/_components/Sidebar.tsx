@@ -3,10 +3,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { ThemeToggler } from "./ThemeToggler";
-import { CalendarHeart, LogOut, Plus, Settings2 } from "lucide-react";
+import { CalendarHeart, LogOut, Menu, Plus, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@clerk/nextjs";
-import CreateEventButton from "./CreateEventButton";
+
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const sidebarItems = [
   {
@@ -32,34 +40,37 @@ const sidebarItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   return (
-    <div className="fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r pb-4 pt-10">
-      <div>
-        <Link
-          href={"/"}
-          className="mb-5 inline-block w-full bg-gradient-to-br from-lime-400 to-lime-600 bg-clip-text px-4 text-center text-4xl font-black text-transparent"
-        >
-          Wishly
-        </Link>
-        <div className="flex w-full items-center justify-center"></div>
-        {sidebarItems.map((item) => (
+    <>
+      <div className="fixed left-0 top-0 hidden h-screen w-72 flex-col justify-between border-r pb-4 pt-10 lg:flex">
+        <div>
           <Link
-            href={item.href}
-            key={item.id}
-            className={`flex cursor-pointer items-center gap-3 p-4 text-sm font-medium hover:bg-secondary/30 ${
-              pathname == item.href
-                ? "bg-secondary/50"
-                : "text-muted-foreground"
-            }`}
+            href={"/"}
+            className="mb-5 inline-block w-full bg-gradient-to-br from-lime-400 to-lime-600 bg-clip-text px-4 text-center text-4xl font-black text-transparent"
           >
-            {item.icon} {item.name}
+            Wishly
           </Link>
-        ))}
+          <div className="flex w-full items-center justify-center"></div>
+          {sidebarItems.map((item) => (
+            <Link
+              href={item.href}
+              key={item.id}
+              className={`flex cursor-pointer items-center gap-3 p-4 text-sm font-medium hover:bg-secondary/30 ${
+                pathname == item.href
+                  ? "bg-secondary/50"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {item.icon} {item.name}
+            </Link>
+          ))}
+        </div>
+        <div>
+          <ThemeToggler />
+          <SignOut />
+        </div>
       </div>
-      <div>
-        <ThemeToggler />
-        <SignOut />
-      </div>
-    </div>
+      <MobileSidebar />
+    </>
   );
 }
 
@@ -75,5 +86,49 @@ function SignOut() {
         Sign Out
       </Button>
     </SignOutButton>
+  );
+}
+
+function MobileSidebar() {
+  const pathname = usePathname();
+  return (
+    <div className="lg:hidden">
+      <Sheet>
+        <SheetTrigger className="fixed left-6 top-8">
+          <Menu />
+        </SheetTrigger>
+        <SheetContent
+          side={"left"}
+          className="flex h-full flex-col justify-between gap-4"
+        >
+          <div>
+            <Link
+              href={"/"}
+              className="mb-5 inline-block w-full bg-gradient-to-br from-lime-400 to-lime-600 bg-clip-text px-4 text-center text-4xl font-black text-transparent"
+            >
+              Wishly
+            </Link>
+            <div className="flex w-full items-center justify-center"></div>
+            {sidebarItems.map((item) => (
+              <Link
+                href={item.href}
+                key={item.id}
+                className={`flex cursor-pointer items-center gap-3 p-4 text-sm font-medium hover:bg-secondary/30 ${
+                  pathname == item.href
+                    ? "bg-secondary/50"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {item.icon} {item.name}
+              </Link>
+            ))}
+          </div>
+          <div>
+            <ThemeToggler />
+            <SignOut />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 }

@@ -12,7 +12,7 @@ interface Category {
 export default function EventsByCategory({ data }: { data: Category[] }) {
   return (
     <section>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center lg:gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Events By Category</h1>
           <h4 className="text-sm text-muted-foreground">
@@ -26,7 +26,7 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
         </Link>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {data?.map((category: Category) => (
           <div
             key={category.id}

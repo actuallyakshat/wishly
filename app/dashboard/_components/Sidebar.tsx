@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { ThemeToggler } from "./ThemeToggler";
 import { CalendarHeart, LogOut, Menu, Plus, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -91,19 +91,23 @@ function SignOut() {
 
 function MobileSidebar() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
   return (
     <div className="lg:hidden">
-      <Sheet>
-        <SheetTrigger className="fixed left-6 top-8">
-          <Menu />
-        </SheetTrigger>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <div className="fixed top-0 flex h-[4.5rem] w-full items-center justify-start bg-background px-6">
+          <SheetTrigger>
+            <Menu />
+          </SheetTrigger>
+        </div>
         <SheetContent
           side={"left"}
-          className="flex h-full flex-col justify-between gap-4"
+          className="flex h-full flex-col justify-between gap-4 px-0"
         >
           <div>
             <Link
               href={"/"}
+              onClick={() => setOpen(false)}
               className="mb-5 inline-block w-full bg-gradient-to-br from-lime-400 to-lime-600 bg-clip-text px-4 text-center text-4xl font-black text-transparent"
             >
               Wishly
@@ -113,6 +117,7 @@ function MobileSidebar() {
               <Link
                 href={item.href}
                 key={item.id}
+                onClick={() => setOpen(false)}
                 className={`flex cursor-pointer items-center gap-3 p-4 text-sm font-medium hover:bg-secondary/30 ${
                   pathname == item.href
                     ? "bg-secondary/50"

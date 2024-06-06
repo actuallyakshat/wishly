@@ -8,7 +8,7 @@ export default function UpcomingEvents({ data }: { data: Event[] | [] }) {
       <h4 className="text-sm text-muted-foreground">
         Events that are on your calendar this month.
       </h4>
-      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {data?.map((event) => (
           <div
             key={event.id}

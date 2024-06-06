@@ -11,7 +11,7 @@ export async function addCategory(name: string, userId: number) {
         userId,
       },
     });
-    revalidatePath("/dashboard/manage-categories");
+    revalidatePath("/dashboard");
     return response;
   } catch (error) {
     console.error(error);
@@ -52,7 +52,6 @@ export async function addEvent(event: any, userId: number) {
         userId,
       },
     });
-    revalidatePath("/dashboard/manage-events");
     revalidatePath("/dashboard");
     return response;
   } catch (error) {

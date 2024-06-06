@@ -17,7 +17,6 @@ export default function page() {
           <AddCategoryDialog />
         </div>
       </div>
-
       <CategoriesList />
     </main>
   );

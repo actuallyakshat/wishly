@@ -59,7 +59,10 @@ export default function AddEventForm() {
       onSubmit={(e) => handleSubmit(e)}
     >
       <EventTitle setEventTitle={setEventTitle} />
-      <Description setEventDescription={setEventDescription} />
+      <Description
+        description={eventDescription}
+        setEventDescription={setEventDescription}
+      />
       <EventDatePicker eventDate={eventDate} setEventDate={setEventDate} />
       <EventCategoryPicker setEventCategory={setEventCategory} />
       <RecuringCheckbox setRecurring={setRecurring} />

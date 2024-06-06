@@ -30,16 +30,30 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
         {data?.map((category: Category) => (
           <div
             key={category.id}
-            className="w-full rounded-lg border p-4 shadow-sm"
+            className="h-full w-full rounded-lg border p-4 shadow-sm"
           >
-            <h2 className="text-xl font-extrabold">{category.name}</h2>
-            <div className="my-1">
+            <div className="flex w-full items-center justify-between">
+              <h2 className="text-xl font-extrabold">{category.name}</h2>
+              <Link
+                href={"/dashboard/category/" + category.id}
+                key={category.id}
+              >
+                <Button variant={"link"} className="h-fit p-0">
+                  View All
+                </Button>
+              </Link>
+            </div>
+
+            <div className="mb-1 mt-3">
               {category.events?.map((event: Event) => (
                 <div key={event.id}>
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">{event.name}</h4>
                     <h4 className="text-sm text-muted-foreground">
-                      {event.date.toLocaleDateString()}
+                      {event.date.toLocaleDateString(undefined, {
+                        day: "numeric",
+                        month: "numeric",
+                      })}
                     </h4>
                   </div>
                 </div>

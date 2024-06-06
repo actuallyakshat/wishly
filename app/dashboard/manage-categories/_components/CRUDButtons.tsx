@@ -55,7 +55,10 @@ export default function CRUDButtons({
   };
 
   return (
-    <div className="flex items-center justify-center gap-3">
+    <div
+      className="flex items-center justify-center gap-3"
+      onClick={(e) => e.preventDefault()}
+    >
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant={"link"} className="h-fit p-0">

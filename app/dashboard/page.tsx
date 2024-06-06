@@ -16,6 +16,9 @@ export default async function Dashboard() {
       where: {
         userId: userId!,
       },
+      include: {
+        category: true,
+      },
     });
   }
 

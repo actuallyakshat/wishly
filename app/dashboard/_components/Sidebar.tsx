@@ -3,18 +3,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { ThemeToggler } from "./ThemeToggler";
-import { CalendarHeart, LogOut, Menu, Plus, Settings2 } from "lucide-react";
+import {
+  CalendarHeart,
+  LogOut,
+  Menu,
+  PartyPopper,
+  Plus,
+  Settings2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@clerk/nextjs";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const sidebarItems = [
   {
@@ -31,6 +31,12 @@ const sidebarItems = [
   },
   {
     id: 3,
+    name: "All Events",
+    icon: <PartyPopper />,
+    href: "/dashboard/all-events",
+  },
+  {
+    id: 4,
     name: "Preferences",
     icon: <Settings2 />,
     href: "/dashboard/preferences",
@@ -102,7 +108,7 @@ function MobileSidebar() {
         </div>
         <SheetContent
           side={"left"}
-          className="flex h-full flex-col justify-between gap-4 px-0"
+          className="flex h-full flex-col justify-between gap-4 p-0 pb-2 pt-12"
         >
           <div>
             <Link

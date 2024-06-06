@@ -21,12 +21,15 @@ export function EventCategoryPicker({
   setEventCategory: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
   const { user } = useClientAuth();
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [categories, setCategories] = React.useState<Category[] | []>([]);
   React.useEffect(() => {
     async function getCategories() {
       if (user) {
+        setLoading(true);
         const categories = await getAllCategories(user.id);
         setCategories(categories);
+        setLoading(false);
       }
     }
     getCategories();
@@ -52,14 +55,25 @@ export function EventCategoryPicker({
           <SelectValue placeholder="Assign a category" />
         </SelectTrigger>
         <SelectContent>
-          {categories && categories.length > 0 ? (
-            categories?.map((category: Category) => (
-              <SelectItem key={category.id} value={category.id.toString()}>
-                {category.name}
-              </SelectItem>
-            ))
-          ) : (
-            <h4 className="px-4 py-3 text-sm">No categories found</h4>
+          {!loading &&
+            (categories && categories.length > 0 ? (
+              categories?.map((category: Category) => (
+                <SelectItem key={category.id} value={category.id.toString()}>
+                  {category.name}
+                </SelectItem>
+              ))
+            ) : (
+              <h4 className="px-4 py-3 text-sm">No categories found</h4>
+            ))}
+          {loading && (
+            <div className="flex animate-pulse flex-col gap-2 py-1 pl-10 pr-5">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="h-6 w-full rounded-lg bg-gray-200"
+                ></div>
+              ))}
+            </div>
           )}
           <hr className="my-1" />
           <AddCategoryDialog refresh={refreshCategories} />

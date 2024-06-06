@@ -13,9 +13,13 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 
-export function EventDatePicker() {
-  const [date, setDate] = React.useState<Date>();
-
+export function EventDatePicker({
+  eventDate,
+  setEventDate,
+}: {
+  eventDate: Date | undefined;
+  setEventDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+}) {
   return (
     <div className="space-y-2">
       <Label>Date</Label>
@@ -25,18 +29,19 @@ export function EventDatePicker() {
             variant={"outline"}
             className={cn(
               "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground",
+              !eventDate && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Pick a date</span>}
+            {eventDate ? format(eventDate, "PPP") : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar
+            fromDate={new Date()}
             mode="single"
-            selected={date}
-            onSelect={setDate}
+            selected={eventDate}
+            onSelect={(date) => setEventDate(date)}
             initialFocus
           />
         </PopoverContent>

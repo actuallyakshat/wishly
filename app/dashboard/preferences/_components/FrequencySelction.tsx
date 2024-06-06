@@ -3,7 +3,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useClientAuth } from "@/providers/auth-provider";
 import { EmailPreference } from "@prisma/client";
-import { ObjectEnumValue } from "@prisma/client/runtime/library";
 import React, { useEffect } from "react";
 
 const option = [
@@ -31,7 +30,7 @@ export default function FrequencySelction({
   emailFrequency,
   setEmailFrequency,
 }: {
-  emailFrequency: EmailPreference;
+  emailFrequency: EmailPreference | {};
   setEmailFrequency: React.Dispatch<React.SetStateAction<EmailPreference>>;
 }) {
   const { user } = useClientAuth();

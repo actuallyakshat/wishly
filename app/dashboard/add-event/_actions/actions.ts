@@ -11,7 +11,49 @@ export async function addCategory(name: string, userId: number) {
         userId,
       },
     });
-    revalidatePath("/dashboard/add-event");
+    revalidatePath("/dashboard/manage-categories");
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getAllCategories(userId: number) {
+  try {
+    const response = await prisma.category.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        events: {
+          orderBy: {
+            date: "asc",
+          },
+        },
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function addEvent(event: any, userId: number) {
+  try {
+    const response = await prisma.event.create({
+      data: {
+        name: event.name,
+        date: event.date,
+        description: event.description,
+        categoryId: event.category,
+        reccuring: event.recurring,
+        userId,
+      },
+    });
+    revalidatePath("/dashboard/manage-events");
+    revalidatePath("/dashboard");
     return response;
   } catch (error) {
     console.error(error);

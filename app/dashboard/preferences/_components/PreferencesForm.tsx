@@ -13,9 +13,9 @@ export default function PreferencesForm() {
   const { user } = useClientAuth();
   const [name, setName] = React.useState<string | null>(null);
   const [emails, setEmails] = React.useState<Email[] | []>(user?.emails || []);
-  const [emailFrequency, setEmailFrequency] = React.useState<EmailPreference>(
-    user!.emailPreferences,
-  );
+  const [emailFrequency, setEmailFrequency] = React.useState<
+    EmailPreference | {}
+  >(user?.emailPreferences || {});
   const [timezone, setTimezone] = React.useState<string>("Asia/Kolkata");
   const [allowSave, setAllowSave] = React.useState(false);
 

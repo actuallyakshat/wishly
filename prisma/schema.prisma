@@ -32,7 +32,7 @@ model Event {
   category        Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId      Int?
   disableReminder Boolean   @default(false)
-  reccuring       Boolean   @default(false)
+  reccuring       Boolean   @default(true)
 }
 
 model EmailPreference {

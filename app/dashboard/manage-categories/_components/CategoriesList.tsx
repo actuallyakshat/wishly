@@ -10,7 +10,11 @@ export default async function CategoriesList() {
       primaryEmail: user?.primaryEmailAddress?.emailAddress,
     },
     include: {
-      categories: true,
+      categories: {
+        include: {
+          events: true,
+        },
+      },
     },
   });
   return (
@@ -19,9 +23,14 @@ export default async function CategoriesList() {
         userDetails?.categories.map((category) => (
           <div
             key={category.id}
-            className="flex w-full items-center justify-between rounded-lg border p-4"
+            className="flex w-full items-center justify-between rounded-lg border bg-muted/20 p-4 shadow-sm"
           >
-            <div>{category.name}</div>
+            <div>
+              <h1 className="text-lg font-semibold">{category.name}</h1>
+              <h4 className="text-sm text-muted-foreground">
+                {category.events.length} events
+              </h4>
+            </div>
             <CRUDButtons name={category.name} id={category.id} />
           </div>
         ))

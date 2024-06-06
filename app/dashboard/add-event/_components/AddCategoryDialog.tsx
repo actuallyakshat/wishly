@@ -15,7 +15,11 @@ import React from "react";
 import { addCategory } from "../_actions/actions";
 import { LoaderCircle } from "lucide-react";
 
-export default function AddCategoryDialog() {
+export default function AddCategoryDialog({
+  refresh,
+}: {
+  refresh?: () => void;
+}) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -23,12 +27,14 @@ export default function AddCategoryDialog() {
   const { user } = useClientAuth();
   async function handleCreateCategory(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    e.stopPropagation();
     setLoading(true);
     try {
       if (name === "") {
         setError("Category name is required");
       }
       await addCategory(name, user!.id);
+      if (refresh) await refresh();
       setIsOpen(false);
     } catch (error) {
       console.error(error);

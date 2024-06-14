@@ -61,7 +61,6 @@ export default function SelectTimezone({
 }) {
   const [open, setOpen] = React.useState(false);
   const [timezoneList, setTimezoneList] = React.useState<Timezone[]>(timezones);
-
   return (
     <div className="space-y-3">
       <Label className="text-md">
@@ -87,7 +86,7 @@ export default function SelectTimezone({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[24rem] p-0">
-          <Command>
+          <Command defaultValue={timezoneValue}>
             <CommandInput placeholder="Search timezone..." />
             <CommandEmpty>No timezone found.</CommandEmpty>
             <CommandGroup>

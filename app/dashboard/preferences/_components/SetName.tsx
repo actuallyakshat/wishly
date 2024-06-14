@@ -12,9 +12,7 @@ export default function SetName({
   setName: (name: string | null) => void;
 }) {
   const { user } = useClientAuth();
-  useEffect(() => {
-    console.log("name", typeof name);
-  }, [name]);
+  useEffect(() => {}, [name]);
   return (
     <div className="w-full">
       <Label>Name</Label>
@@ -33,7 +31,7 @@ export default function SetName({
             setName(inputValue);
           }
         }}
-        className="mt-3"
+        className="mt-3 font-medium"
       />
     </div>
   );

@@ -2,7 +2,7 @@
 
 import prisma from "@/db";
 
-export async function getUser(email: string) {
+export async function getUser(email: string, fullName: string) {
   try {
     if (!email) {
       return { status: 400, error: "Email is required" };
@@ -19,6 +19,7 @@ export async function getUser(email: string) {
     if (!user) {
       const createdUser = await prisma.user.create({
         data: {
+          name: fullName,
           primaryEmail: email,
           timeZone: "Asia/Kolkata",
           emails: {

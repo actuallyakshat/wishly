@@ -50,12 +50,9 @@ export function SelectEmails({
 }) {
   const { user } = useClientAuth();
 
-  useEffect(() => {
-    console.log("allEmails", allEmails);
-  }, [allEmails]);
+  useEffect(() => {}, [allEmails]);
 
   const handleCheckedChange = (emailId: string, checked: boolean) => {
-    console.log(`Toggling email ID ${emailId} to ${checked}`);
     setAllEmails((emails) =>
       emails.map((e) => (e.email === emailId ? { ...e, active: checked } : e)),
     );
@@ -65,12 +62,17 @@ export function SelectEmails({
 
   return (
     <div className="space-y-3">
-      <Label className="text-md">
-        <h4>Emails</h4>
-        <p className="text-sm text-muted-foreground">
-          Select the emails on which you wish to receive the notifications.
-        </p>
-      </Label>
+      <div className="flex w-full items-center justify-between gap-2">
+        <Label className="text-md">
+          <h4>Emails</h4>
+          <p className="text-sm text-muted-foreground">
+            Select the emails on which you wish to receive the notifications.
+          </p>
+        </Label>
+        <Button variant={"link"} className="text-sm" size={"sm"}>
+          Manage
+        </Button>
+      </div>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -175,9 +177,7 @@ function AddEmail({
 
       <form
         onSubmit={(e) => {
-          console.log("clicked");
           e.preventDefault();
-          handleAddEmail();
         }}
       >
         <div className="space-y-3">
@@ -188,7 +188,7 @@ function AddEmail({
             type="email"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Button onClick={handleAddEmail}>
+          <Button onClick={() => handleAddEmail()} disabled={loading}>
             {loading ? "Loading" : "Add Email"}
           </Button>
         </div>

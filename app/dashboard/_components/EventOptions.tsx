@@ -45,7 +45,6 @@ export default function EventOptions({ event }: { event: Event }) {
         description: description,
         date: date,
       };
-      console.log(payload);
       const success = await editEvent(payload);
       console.log(success);
       if (success) {

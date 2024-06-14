@@ -15,6 +15,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   user: clientUserType | null;
+  refreshUser: () => void;
 }
 
 interface clientUserType extends User {
@@ -42,6 +43,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await getUser(
         clerkUser?.primaryEmailAddress?.emailAddress as string,
+        clerkUser?.fullName as string,
       );
       setClientUser(response.user);
       setIsAuthenticated(true);
@@ -63,14 +65,17 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [clerkUser]);
 
   if (loading) {
-    console.log("loading", loading);
-    console.log("isAuthenticated", isAuthenticated);
     return <Loading />;
   }
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, loading, user: clientUser }}
+      value={{
+        isAuthenticated,
+        loading,
+        user: clientUser,
+        refreshUser: getDetailsHandler,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -27,9 +27,10 @@ export default async function CategoriesList() {
               <div>
                 <h1 className="text-lg font-semibold">{category.name}</h1>
                 <h4 className="text-sm text-muted-foreground">
-                  {category.events.length > 1
-                    ? category.events.length + " Events"
-                    : category.events.length + " Event"}
+                  {category.events.length > 0 &&
+                    (category.events.length != 1
+                      ? category.events.length + " Events"
+                      : category.events.length + " Event")}
                   {category.events.length === 0 && (
                     <span className="text-sm text-muted-foreground">
                       No Events

@@ -3,7 +3,6 @@ import Navbar from "./_components/Navbar";
 import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import prisma from "@/db";
 
 const headingGradient =
   "bg-gradient-to-br from-lime-400 to-lime-600 text-transparent bg-clip-text inline-block";

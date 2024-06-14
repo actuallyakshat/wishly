@@ -1,7 +1,7 @@
 "use server";
 
 import generateOTP from "../generateOtp";
-import { transporter } from "../mail-transporter";
+import { mailClient } from "../mail";
 
 type OTPStoreType = {
   [email: string]: number;
@@ -10,18 +10,21 @@ type OTPStoreType = {
 const OTPStore: OTPStoreType = {};
 export async function sendotp(email: string) {
   try {
+    console.log(OTPStore);
     if (!email) return;
     const OTP = generateOTP();
     OTPStore[email] = OTP;
-    console.log("i am called and I am sending email");
-    const { response } = await transporter.sendMail({
-      from: "akshatdubey0808@gmail.com",
-      to: email,
-      subject: "testing otp",
-      html: `<p>Hi, ${email}!</p><p>Your OTP is ${OTP}</p>`,
-    });
-    console.log(response);
-    return;
+    await mailClient.send(
+      {
+        from: process.env.MAIL_USER as string,
+        to: email,
+        subject: "OTP for Adding an Email",
+        text: `Your OTP is ${OTP}`,
+      },
+      (err, message) => {
+        console.log(err || message);
+      },
+    );
   } catch (error) {
     console.log(error);
     throw error;

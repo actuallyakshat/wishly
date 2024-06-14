@@ -8,16 +8,28 @@ import SetName from "./SetName";
 import { Email, EmailPreference } from "@prisma/client";
 import { useClientAuth } from "@/providers/auth-provider";
 import { saveChanges } from "../_actions/actions";
+import { toast } from "sonner";
 
 export default function PreferencesForm() {
-  const { user } = useClientAuth();
-  const [name, setName] = React.useState<string | null>(null);
+  const { user, refreshUser } = useClientAuth();
+  const [loading, setLoading] = React.useState(false);
+  const [name, setName] = React.useState<string | null>(user?.name || null);
   const [emails, setEmails] = React.useState<Email[] | []>(user?.emails || []);
   const [emailFrequency, setEmailFrequency] = React.useState<
     EmailPreference | {}
   >(user?.emailPreferences || {});
-  const [timezone, setTimezone] = React.useState<string>("Asia/Kolkata");
+  const [timezone, setTimezone] = React.useState<string>(
+    user?.timeZone || "Asia/Kolkata",
+  );
   const [allowSave, setAllowSave] = React.useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setEmails(user.emails);
+      setEmailFrequency(user.emailPreferences);
+    }
+  }, [user]);
 
   function compareCommonFields(
     obj1: Record<string, any>,
@@ -34,24 +46,34 @@ export default function PreferencesForm() {
       return false;
     }
     for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] !== arr2[i]) {
+      const obj1 = arr1[i];
+      const obj2 = arr2[i];
+      if (JSON.stringify(obj1) !== JSON.stringify(obj2)) {
         return false;
       }
     }
     return true;
   }
-
   async function handleSubmit(e: any) {
-    e.preventDefault();
-    const payload = {
-      emailFrequency,
-      userId: user!.id,
-      timezone,
-      name,
-      emails,
-    };
-    await saveChanges(payload);
-    setAllowSave(false);
+    try {
+      e.preventDefault();
+      const payload = {
+        emailFrequency,
+        userId: user!.id,
+        timezone,
+        name,
+        emails,
+      };
+      setLoading(true);
+      await saveChanges(payload);
+      await refreshUser();
+      toast.success("Changes saved successfully");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+      setAllowSave(false);
+    }
   }
 
   useEffect(() => {
@@ -69,8 +91,21 @@ export default function PreferencesForm() {
     }
   }, [emailFrequency, name, timezone, user, emails]);
 
+  if (
+    !user ||
+    !user.name ||
+    !user.emails ||
+    !user.emailPreferences ||
+    !user.timeZone
+  ) {
+    return (
+      <h1 className="text-xl font-semibold text-muted-foreground">
+        Loading...
+      </h1>
+    );
+  }
   return (
-    <form className="max-w-sm space-y-5 py-3">
+    <form className="max-w-sm space-y-5 py-3" onSubmit={(e) => handleSubmit(e)}>
       <SetName name={name} setName={setName} />
       <SelectEmails allEmails={emails} setAllEmails={setEmails} />
       <SelectTimezone timezoneValue={timezone} setTimezone={setTimezone} />
@@ -79,11 +114,11 @@ export default function PreferencesForm() {
         setEmailFrequency={setEmailFrequency}
       />
       <Button
-        disabled={!allowSave}
+        disabled={!allowSave || loading}
         variant={"alternative"}
-        onSubmit={(e) => e.preventDefault()}
+        type="submit"
       >
-        Save Changes
+        {loading ? "Saving" : "Save Changes"}
       </Button>
     </form>
   );

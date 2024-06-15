@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Popover,
   PopoverContent,
@@ -14,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Ellipsis, LoaderCircle } from "lucide-react";
-import { Event } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -26,32 +25,57 @@ import {
   toggleNotification,
 } from "../_actions/actions";
 import { toast } from "sonner";
-export default function EventOptions({ event }: { event: Event }) {
+import ViewEventModal from "./ViewEventModal";
+import { EventWithCategory } from "@/lib/types";
+import { EventCategoryPicker } from "../add-event/_components/EventCategoryPicker";
+import { Category } from "@prisma/client";
+import RecuringCheckbox from "../add-event/_components/RecuringCheckbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
+export default function EventOptions({ event }: { event: EventWithCategory }) {
   const [description, setDescription] = React.useState(event.description || "");
   const [date, setDate] = React.useState<Date | undefined>(event.date);
   const [name, setName] = React.useState(event.name);
+  const [eventCategory, setEventCategory] = React.useState<number | null>(
+    event.category?.id || null,
+  );
   const [updateLoading, setUpdateLoading] = React.useState(false);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [recurring, setRecurring] = React.useState<CheckedState | null>(
+    event.reccuring,
+  );
+  const [notifications, setNotifications] = React.useState(
+    event.disableReminder ? "Enable Notification" : "Disable Notification",
+  );
   const [toggleNotificationLoading, setToggleNotificationLoading] =
     React.useState(false);
+
+  useEffect(() => {
+    console.log(recurring);
+  }, [recurring]);
 
   async function handleUpdateEvent(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       setUpdateLoading(true);
+      console.log("recurring", recurring);
       const payload = {
         id: event.id,
         name: name,
         description: description,
         date: date,
+        categoryId: eventCategory,
+        recurring: recurring,
       };
+      console.log("payload", payload);
+      toast.loading("Updating event...", { id: "update-event" });
       const success = await editEvent(payload);
       console.log(success);
       if (success) {
-        toast.success("Event updated successfully");
+        toast.success("Event updated successfully", { id: "update-event" });
       }
     } catch (e) {
       console.log(e);
+      toast.error("Error updating event", { id: "update-event" });
     } finally {
       setUpdateLoading(false);
     }
@@ -60,12 +84,14 @@ export default function EventOptions({ event }: { event: Event }) {
   async function handleDelete() {
     try {
       setDeleteLoading(true);
+      toast.loading("Deleting event...", { id: "delete-event" });
       const success = await deleteEvent(event.id);
       if (success) {
-        toast.success("Event deleted successfully");
+        toast.success("Event deleted successfully", { id: "delete-event" });
       }
     } catch (e) {
       console.log(e);
+      toast.error("Error deleting event", { id: "delete-event" });
       setDeleteLoading(false);
     }
   }
@@ -80,10 +106,17 @@ export default function EventOptions({ event }: { event: Event }) {
     } catch (e) {
       console.log(e);
       setToggleNotificationLoading(false);
-    } finally {
-      setToggleNotificationLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (event.disableReminder) {
+      setNotifications("Enable Notification");
+    } else {
+      setNotifications("Disable Notification");
+    }
+    setToggleNotificationLoading(false);
+  }, [event.disableReminder]);
 
   return (
     <div>
@@ -95,6 +128,7 @@ export default function EventOptions({ event }: { event: Event }) {
           />
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col gap-1 px-1 py-1">
+          <ViewEventModal event={event} />
           <Dialog>
             <DialogTrigger asChild>
               <Button variant={"ghost"} className="menuBtn">
@@ -109,7 +143,7 @@ export default function EventOptions({ event }: { event: Event }) {
                 </DialogDescription>
               </DialogHeader>
               <form
-                className="flex flex-col gap-2"
+                className="flex flex-col gap-5"
                 onSubmit={(e) => handleUpdateEvent(e)}
               >
                 <div className="space-y-2">
@@ -141,6 +175,17 @@ export default function EventOptions({ event }: { event: Event }) {
                   <Label>Date</Label>
                   <EditDatePicker date={date} setDate={setDate} />
                 </div>
+
+                <EventCategoryPicker
+                  defaultCategory={event.category}
+                  setEventCategory={setEventCategory}
+                />
+
+                <RecuringCheckbox
+                  setRecurring={setRecurring}
+                  defaultChecked={event.reccuring}
+                />
+
                 <div className="flex items-center justify-end">
                   <Button
                     type="submit"
@@ -194,10 +239,8 @@ export default function EventOptions({ event }: { event: Event }) {
           >
             {toggleNotificationLoading ? (
               <LoaderCircle size={16} className="animate-spin" />
-            ) : event.disableReminder ? (
-              "Enable Notification"
             ) : (
-              "Disable Notification"
+              notifications
             )}
           </Button>
         </PopoverContent>

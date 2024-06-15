@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { ThemeToggler } from "./ThemeToggler";
 import {
   CalendarHeart,
+  FolderOpenDot,
   LogOut,
   Menu,
   PartyPopper,
@@ -37,6 +38,12 @@ const sidebarItems = [
   },
   {
     id: 4,
+    name: "Manage Categories",
+    icon: <FolderOpenDot />,
+    href: "/dashboard/manage-categories",
+  },
+  {
+    id: 5,
     name: "Preferences",
     icon: <Settings2 />,
     href: "/dashboard/preferences",

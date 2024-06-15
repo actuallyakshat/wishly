@@ -14,6 +14,7 @@ import { useClientAuth } from "@/providers/auth-provider";
 import React from "react";
 import { addCategory } from "../_actions/actions";
 import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AddCategoryDialog({
   refresh,
@@ -33,10 +34,13 @@ export default function AddCategoryDialog({
       if (name === "") {
         setError("Category name is required");
       }
+      toast.loading("Creating category", { id: "create-category" });
       await addCategory(name, user!.id);
       if (refresh) await refresh();
+      toast.success("Category created successfully", { id: "create-category" });
       setIsOpen(false);
     } catch (error) {
+      toast.error("Error creating category", { id: "create-category" });
       console.error(error);
     } finally {
       setLoading(false);

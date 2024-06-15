@@ -1,14 +1,20 @@
 "use client";
 import React, { use, useEffect } from "react";
-import { Event } from "@prisma/client";
 import { Input } from "@/components/ui/input";
 import EventCard from "./EventCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { EventWithCategory } from "@/lib/types";
 
-export default function AllEvents({ allEvents }: { allEvents: Event[] | [] }) {
+export default function AllEvents({
+  allEvents,
+}: {
+  allEvents: EventWithCategory[] | [];
+}) {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
-  const [filteredEvents, setFilteredEvents] = React.useState<Event[] | []>([]);
+  const [filteredEvents, setFilteredEvents] = React.useState<
+    EventWithCategory[] | []
+  >([]);
   useEffect(() => {
     if (searchQuery === "") {
       setFilteredEvents([]);
@@ -21,6 +27,10 @@ export default function AllEvents({ allEvents }: { allEvents: Event[] | [] }) {
       );
     }
   }, [searchQuery, allEvents]);
+
+  useEffect(() => {
+    console.log(allEvents);
+  }, [allEvents]);
 
   return (
     <section>

@@ -7,12 +7,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { EventWithCategory } from "@/lib/types";
 
 type MonthlyData = {
-  [key: string]: Event[];
+  [key: string]: EventWithCategory[];
 };
 
-export default function MonthWiseEventsList({ data }: { data: Event[] }) {
+export default function MonthWiseEventsList({
+  data,
+}: {
+  data: EventWithCategory[];
+}) {
   const months = [
     "January",
     "February",
@@ -45,7 +50,7 @@ export default function MonthWiseEventsList({ data }: { data: Event[] }) {
           <Accordion type="single" collapsible>
             <AccordionItem value={month}>
               <AccordionTrigger className="flex items-center justify-start gap-3">
-                <h2 className="text-xl font-bold">{month}</h2>
+                <h2 className="text-lg font-medium">{month}</h2>
                 <span className="text-sm text-muted-foreground no-underline">
                   {monthlyData[month].length == 1
                     ? "1 event"
@@ -60,7 +65,7 @@ export default function MonthWiseEventsList({ data }: { data: Event[] }) {
                     ))}
                   </div>
                 ) : (
-                  <h3 className="">No events found</h3>
+                  <h3 className="text-muted-foreground">No events found.</h3>
                 )}
               </AccordionContent>
             </AccordionItem>

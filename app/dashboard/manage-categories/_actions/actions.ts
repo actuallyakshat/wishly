@@ -6,8 +6,7 @@ import { revalidatePath } from "next/cache";
 export async function removeCategory(id: number) {
   try {
     await prisma.category.delete({ where: { id: id } });
-    revalidatePath("/dashboard/manage-categories");
-    revalidatePath("/dashboard/add-event");
+    revalidatePath("/dashboard");
     return true;
   } catch (e) {
     return false;
@@ -20,8 +19,7 @@ export async function editCategory(id: number, name: string) {
       where: { id: id },
       data: { name: name },
     });
-    revalidatePath("/dashboard/manage-categories");
-    revalidatePath("/dashboard/add-event");
+    revalidatePath("/dashboard");
     return true;
   } catch (e) {
     return false;

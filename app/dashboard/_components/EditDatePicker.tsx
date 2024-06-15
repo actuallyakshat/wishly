@@ -36,9 +36,10 @@ export function EditDatePicker({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
+          fromDate={new Date()}
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(date) => setDate(date)}
           initialFocus
         />
       </PopoverContent>

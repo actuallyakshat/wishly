@@ -68,6 +68,11 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
             </div>
           </div>
         ))}
+        {data?.length === 0 && (
+          <h2 className="text-lg font-medium text-muted-foreground">
+            You have not created any categories yet.
+          </h2>
+        )}
       </div>
     </section>
   );

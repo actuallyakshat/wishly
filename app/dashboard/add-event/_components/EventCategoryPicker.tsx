@@ -17,8 +17,10 @@ import { getAllCategories } from "../_actions/actions";
 
 export function EventCategoryPicker({
   setEventCategory,
+  defaultCategory,
 }: {
   setEventCategory: React.Dispatch<React.SetStateAction<number | null>>;
+  defaultCategory?: Category | null;
 }) {
   const { user } = useClientAuth();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -40,6 +42,18 @@ export function EventCategoryPicker({
     setCategories(categories);
   }
 
+  if (loading)
+    return (
+      <div className="w-full animate-pulse space-y-3">
+        <div className="flex w-full items-center justify-between">
+          <div className="h-6 w-[60px] rounded-sm bg-muted"></div>
+          <div className="h-6 w-[60px] rounded-sm bg-muted"></div>
+        </div>
+
+        <div className="h-10 w-full rounded-sm bg-muted"></div>
+      </div>
+    );
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -50,7 +64,10 @@ export function EventCategoryPicker({
           </Button>
         </Link>
       </div>
-      <Select onValueChange={(value) => setEventCategory(Number(value))}>
+      <Select
+        defaultValue={defaultCategory?.id.toString()}
+        onValueChange={(value) => setEventCategory(Number(value))}
+      >
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Assign a category" />
         </SelectTrigger>

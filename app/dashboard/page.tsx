@@ -7,10 +7,11 @@ import prisma from "@/db";
 import { Event } from "@prisma/client";
 import EventsByCategory from "./_components/EventsByCategory";
 import { getAllCategories } from "./add-event/_actions/actions";
+import { EventWithCategory } from "@/lib/types";
 export default async function Dashboard() {
   const user = await currentUser();
   const userId = await getUserId(user!.primaryEmailAddress!.emailAddress);
-  let allEvents: Event[] | [] = [];
+  let allEvents: EventWithCategory[] | [] = [];
   if (userId) {
     allEvents = await prisma.event.findMany({
       where: {

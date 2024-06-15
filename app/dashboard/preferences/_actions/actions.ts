@@ -2,6 +2,7 @@
 
 import prisma from "@/db";
 import { Email, EmailPreference } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export async function addEmail(email: string, userId: number) {
   try {
@@ -76,5 +77,29 @@ export async function saveChanges(payload: saveChangesProps) {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function removeEmail(emailIdToDelete: number, userId: number) {
+  try {
+    const email = await prisma.email.findFirst({
+      where: { id: emailIdToDelete, userId: userId },
+    });
+
+    if (!email) {
+      console.log("Email not found");
+      return false;
+    }
+
+    await prisma.email.delete({
+      where: { id: emailIdToDelete },
+    });
+
+    console.log("Email deleted successfully");
+    revalidatePath("/dashboard/preferences");
+    return true;
+  } catch (e) {
+    console.error("Error deleting email:", e);
+    return false;
   }
 }

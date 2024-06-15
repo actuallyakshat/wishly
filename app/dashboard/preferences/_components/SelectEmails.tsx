@@ -38,6 +38,7 @@ import generateOTP from "@/lib/generateOtp";
 import { sendotp, verifyotp } from "@/lib/email-methods/handleOtp";
 import { addEmail } from "../_actions/actions";
 import { Email } from "@prisma/client";
+import ManageEmailsModal from "./ManageEmailsModal";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 
@@ -69,9 +70,7 @@ export function SelectEmails({
             Select the emails on which you wish to receive the notifications.
           </p>
         </Label>
-        <Button variant={"link"} className="text-sm" size={"sm"}>
-          Manage
-        </Button>
+        <ManageEmailsModal emails={allEmails} setAllEmails={setAllEmails} />
       </div>
 
       <DropdownMenu>

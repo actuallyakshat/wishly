@@ -18,6 +18,7 @@ export const getUserId = async (email: string) => {
 
 export async function editEvent(event: any) {
   try {
+    console.log(event.recurring);
     await prisma.event.update({
       where: {
         id: event.id,
@@ -26,6 +27,8 @@ export async function editEvent(event: any) {
         name: event.name,
         description: event.description,
         date: event.date,
+        categoryId: event.categoryId,
+        reccuring: event.recurring,
       },
     });
     revalidatePath("/dashboard");

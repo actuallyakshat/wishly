@@ -1,8 +1,8 @@
 Checklist:
 
-- [ ] Optimistic notifications toggle
-- [ ] Setup nodemailer
-- [ ] Fix 2 otps being sent at once.
-- [ ] Add category wise list on all events page
-- [ ] Event updation reccuring and category option
-- [ ] Save settings in db
+- [x] Optimistic notifications toggle
+- [x] Setup email service
+- [x] Fix 2 otps being sent at once.
+- [x] Add category wise list on all events page
+- [x] Event updation reccuring and category option
+- [x] Save settings in db

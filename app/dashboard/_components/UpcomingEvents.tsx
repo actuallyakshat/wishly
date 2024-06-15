@@ -1,8 +1,9 @@
 import { Event } from "@prisma/client";
 import React from "react";
 import EventCard from "./EventCard";
+import { EventWithCategory } from "@/lib/types";
 
-export default function UpcomingEvents({ data }: { data: Event[] | [] }) {
+export default function UpcomingEvents({ data }: { data: EventWithCategory[] | [] }) {
   return (
     <section>
       <h1 className="text-2xl font-semibold">Upcoming This Month</h1>

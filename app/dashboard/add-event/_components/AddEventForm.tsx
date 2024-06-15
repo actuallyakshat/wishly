@@ -17,7 +17,7 @@ export default function AddEventForm() {
   const [eventDescription, setEventDescription] = React.useState<string>("");
   const [eventDate, setEventDate] = React.useState<Date | undefined>(undefined);
   const [eventCategory, setEventCategory] = React.useState<number | null>(null);
-  const [recurring, setRecurring] = React.useState<CheckedState>(true);
+  const [recurring, setRecurring] = React.useState<CheckedState | null>(true);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { user } = useClientAuth();
 

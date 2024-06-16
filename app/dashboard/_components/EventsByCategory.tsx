@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Event } from "@prisma/client";
+import { Event, User } from "@prisma/client";
+import moment from "moment-timezone";
 import Link from "next/link";
 import React from "react";
 
@@ -7,6 +8,7 @@ interface Category {
   id: number;
   name: string;
   events: Event[];
+  user: User;
 }
 
 export default function EventsByCategory({ data }: { data: Category[] }) {
@@ -50,10 +52,9 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">{event.name}</h4>
                     <h4 className="text-sm text-muted-foreground">
-                      {event.date.toLocaleDateString(undefined, {
-                        day: "numeric",
-                        month: "numeric",
-                      })}
+                      {moment(event.date)
+                        .tz(category.user.timeZone || "UTC")
+                        .format("D/M")}
                     </h4>
                   </div>
                 </div>

@@ -26,6 +26,7 @@ export async function getAllCategories(userId: number) {
         userId,
       },
       include: {
+        user: true,
         events: {
           orderBy: {
             date: "asc",

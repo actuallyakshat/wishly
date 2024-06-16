@@ -1,10 +1,13 @@
+"use client";
 import { BellOff } from "lucide-react";
 import React from "react";
 import EventOptions from "./EventOptions";
 import { EventWithCategory } from "@/lib/types";
-import { Event } from "@prisma/client";
+import moment from "moment-timezone";
+import { useClientAuth } from "@/providers/auth-provider";
 
 export default function EventCard({ event }: { event: EventWithCategory }) {
+  const { user } = useClientAuth();
   return (
     <div
       key={event.id}
@@ -27,10 +30,9 @@ export default function EventCard({ event }: { event: EventWithCategory }) {
         </div>
         <div className="flex flex-shrink-0 items-center gap-2">
           <h4 className="text-sm text-muted-foreground">
-            {event.date.toLocaleDateString(undefined, {
-              day: "numeric",
-              month: "numeric",
-            })}
+            {moment(event.date)
+              .tz(user?.timeZone || "UTC")
+              .format("D/M")}
           </h4>
           <EventOptions event={event} />
         </div>

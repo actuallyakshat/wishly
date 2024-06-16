@@ -24,7 +24,7 @@ export default async function CategoriesList() {
         <div className="grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {userDetails?.categories.map((category) => (
             <Link href={"/dashboard/category/" + category.id} key={category.id}>
-              <div className="flex w-full items-center justify-between rounded-lg border bg-muted/20 p-4 shadow-sm">
+              <div className="flex w-full items-center justify-between rounded-lg border bg-muted/20 p-4 shadow-sm transition-all duration-300 hover:bg-muted/60">
                 <div>
                   <h1 className="text-lg font-semibold">{category.name}</h1>
                   <h4 className="text-sm text-muted-foreground">

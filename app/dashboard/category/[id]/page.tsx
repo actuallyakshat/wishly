@@ -44,6 +44,11 @@ export default async function page({ params }: { params: { id: string } }) {
           <EventCard key={event.id} event={event} />
         ))}
       </div>
+      {category?.events?.length == 0 && (
+        <h2 className="mt-2 text-lg font-medium text-muted-foreground">
+          You have not created any events in this category yet.
+        </h2>
+      )}
     </main>
   );
 }

@@ -86,7 +86,10 @@ export async function sendReminderEmail({
       });
       console.log(response);
     };
-    await Promise.all(emails.map((email) => sendMail(email)));
+    const sendAllMails = async (emails: Email[]) => {
+      await Promise.all(emails.map((email) => sendMail(email)));
+    };
+    await sendAllMails(emails);
     return true;
   } catch (error) {
     console.log(error);

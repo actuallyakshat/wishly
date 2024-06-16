@@ -35,7 +35,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useClientAuth } from "@/providers/auth-provider";
 import generateOTP from "@/lib/generateOtp";
-import { sendotp, verifyotp } from "@/lib/email-methods/handleOtp";
+import { sendotp, verifyotp } from "@/lib/email-methods/emailMethods";
 import { addEmail } from "../_actions/actions";
 import { Email } from "@prisma/client";
 import ManageEmailsModal from "./ManageEmailsModal";
@@ -220,6 +220,7 @@ function VerifyEmail({
   setAllEmails: React.Dispatch<React.SetStateAction<Email[]>>;
   setAddEmailModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const { refreshUser } = useClientAuth();
   const { user } = useClientAuth();
   const userId = user?.id;
   const [value, setValue] = React.useState("");
@@ -231,7 +232,7 @@ function VerifyEmail({
       const isValid = await verifyotp(email, Number(value));
       if (isValid) {
         const response = await addEmail(email, userId!);
-        setAllEmails((emails) => [...emails, response]);
+        refreshUser();
         setAddEmailModal(false);
       }
     } catch (error) {

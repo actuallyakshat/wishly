@@ -96,7 +96,6 @@ export async function removeEmail(emailIdToDelete: number, userId: number) {
     });
 
     console.log("Email deleted successfully");
-    revalidatePath("/dashboard/preferences");
     return true;
   } catch (e) {
     console.error("Error deleting email:", e);

@@ -20,12 +20,20 @@ export async function sendotp(email: string) {
     const otpTemplate = render(
       OTPEmailTemplate({ validationCode: OTP.toString() }),
     );
+
+    setTimeout(
+      () => {
+        delete OTPStore[email];
+        console.log(`OTP for ${email} has been deleted`);
+      },
+      15 * 60 * 1000,
+    );
+
     await mailClient.sendMail(
       {
         from: process.env.MAIL_USER as string,
         to: email,
         subject: "One Time Password for Adding a New Email",
-        // text: `Your OTP for adding a new email is ${OTP}`,
         html: otpTemplate,
       },
       (err, message) => {

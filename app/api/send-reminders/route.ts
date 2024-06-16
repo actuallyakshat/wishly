@@ -1,4 +1,4 @@
-import { sendReminderEmail } from "@/lib/email-methods/handleOtp";
+import { sendReminderEmail } from "@/lib/email-methods/emailMethods";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";
 import { Email } from "@prisma/client";
 import moment from "moment-timezone";
@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
       }
 
       if (reminderType == "today") {
+        if (!event.user.emailPreferences?.emailOnDate) return;
         console.log("send email for today");
         const preview = `Reminder for ${event.name} today`;
         const headerContent = `You Have an Event Today: ${event.name}`;
@@ -39,6 +40,7 @@ export async function GET(req: NextRequest) {
         ];
         handleSendEmail(event.user.emails, preview, headerContent, mainContent);
       } else if (reminderType == "tomorrow") {
+        if (!event.user.emailPreferences?.emailOneDayBefore) return;
         const preview = `Reminder for ${event.name} tomorrow`;
         const headerContent = `You Have an Event Tomorrow: ${event.name}`;
         const mainContent = [
@@ -48,6 +50,7 @@ export async function GET(req: NextRequest) {
         ];
         handleSendEmail(event.user.emails, preview, headerContent, mainContent);
       } else if (reminderType == "week") {
+        if (!event.user.emailPreferences?.emailOneWeekBefore) return;
         console.log("send email for week");
         const preview = `Reminder for ${event.name} next week`;
         const headerContent = `You Have an Event Next Week: ${event.name}`;

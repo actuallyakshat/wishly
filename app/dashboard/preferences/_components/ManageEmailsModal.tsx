@@ -25,6 +25,7 @@ export default function ManageEmailsModal({
 }) {
   const { user } = useClientAuth();
   const [loadingEmailId, setLoadingEmailId] = useState<number | null>(null);
+  const { refreshUser } = useClientAuth();
 
   async function handleRemoveEmail(emailId: number, email: string) {
     try {
@@ -37,9 +38,9 @@ export default function ManageEmailsModal({
       setLoadingEmailId(emailId);
       toast.loading("Removing email...", { id: "email-remove" });
       const response = await removeEmail(emailId, user?.id!);
+      refreshUser();
       if (response) {
         toast.success("Email removed successfully", { id: "email-remove" });
-        setAllEmails((emails) => emails.filter((e) => e.id !== emailId));
       } else {
         toast.error("Error removing email", { id: "email-remove" });
       }

@@ -102,7 +102,7 @@ const h1 = {
 };
 
 const h3 = {
-  color: "#a0dc40",
+  color: "#83c320",
   fontSize: "30px",
   fontWeight: "700",
   margin: "15px 0",

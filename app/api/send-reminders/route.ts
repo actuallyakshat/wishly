@@ -1,9 +1,9 @@
+export const revalidate = 0;
 import { sendReminderEmail } from "@/lib/email-methods/emailMethods";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";
 import { Email } from "@prisma/client";
 import moment from "moment-timezone";
 import { NextRequest, NextResponse } from "next/server";
-
 export async function GET(req: NextRequest) {
   try {
     const eventsWithUsers = await fetchEventsForCurrentWeek();

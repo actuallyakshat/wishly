@@ -59,9 +59,6 @@ dependencies:
   date-fns:
     specifier: ^3.6.0
     version: 3.6.0
-  emailjs:
-    specifier: ^4.0.3
-    version: 4.0.3(typescript@5.4.5)
   input-otp:
     specifier: ^1.2.4
     version: 1.2.4(react-dom@18.3.1)(react@18.3.1)
@@ -3267,18 +3264,6 @@ packages:
     resolution: {integrity: sha512-61H9mLzGOCLLVsnLiRzCbc63uldP0AniRYPV3hbGVtONA1pI7qSGILdbofR7A8TMbOypDocEAjH/e+9k1QIe3g==}
     dev: false
 
-  /emailjs@4.0.3(typescript@5.4.5):
-    resolution: {integrity: sha512-1CDXoE3FxkSg7QRTlLsDCYG9elFNu/JQsYWu3Xfrk77ubbg5zYgFGg+JRUKQJ56mceM8o3rHHX0VB4wo9XsyLQ==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      typescript: '>=4.3.5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      typescript: 5.4.5
-    dev: false
-
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
@@ -6129,6 +6114,7 @@ packages:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: true
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

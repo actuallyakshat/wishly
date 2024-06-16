@@ -6,7 +6,6 @@ import OTPEmailTemplate from "@/lib/email-templates/OTPEmailTemplate";
 import ReminderEmailTemplate from "../email-templates/ReminderTemplate";
 import { Email } from "@prisma/client";
 import { sendEmail } from "../mail";
-
 type OTPStoreType = {
   [email: string]: number;
 };
@@ -27,17 +26,6 @@ export async function sendotp(email: string) {
       },
       15 * 60 * 1000,
     );
-
-    // const sendMail = async () => {
-    //   const response = await mailClient.sendMail({
-    //     from: process.env.MAIL_USER as string,
-    //     to: email,
-    //     subject: "One Time Password for Adding a New Email",
-    //     html: otpTemplate,
-    //   });
-    //   console.log(response);
-    // };
-    // await sendMail();
 
     await sendEmail({
       to: email,
@@ -79,41 +67,16 @@ export async function sendReminderEmail({
 }) {
   try {
     if (emails.length === 0) return;
+    const extractedIds = emails.map((email) => email.email);
     console.log("sending email");
     const reminderEmailTemplate = render(
       ReminderEmailTemplate({ preview, headerContent, mainContent }),
     );
 
-    // const sendMail = async (email: string) => {
-    //   const mailOptions = {
-    //     from: process.env.MAIL_USER as string,
-    //     to: email,
-    //     subject: "Wishly Reminder",
-    //     html: reminderEmailTemplate,
-    //   };
-
-    //   try {
-    //     const response = await mailClient.sendMail(mailOptions);
-    //     console.log(`Email sent to ${email}:`, response);
-    //   } catch (error) {
-    //     console.error(`Failed to send email to ${email}:`, error);
-    //   }
-    // };
-
-    // const sendAllMailsConcurrently = async (emails: Email[]) => {
-    //   const promises = emails.map((email) => sendMail(email.email));
-
-    //   try {
-    //     await Promise.all(promises);
-    //   } catch (error) {
-    //     console.error("One or more emails failed to send:", error);
-    //   }
-    // };
-
-    // await sendAllMailsConcurrently(emails);
-    console.log(emails[0].email);
     await sendEmail({
-      to: emails[0].email,
+      from: process.env.MAIL_USER,
+      //@ts-ignore
+      to: extractedIds,
       subject: "Wishly Reminder",
       html: reminderEmailTemplate,
     });

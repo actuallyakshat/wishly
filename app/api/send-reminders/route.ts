@@ -1,4 +1,6 @@
+import { sendReminderEmail } from "@/lib/email-methods/handleOtp";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";
+import { Email } from "@prisma/client";
 import moment from "moment-timezone";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -28,10 +30,33 @@ export async function GET(req: NextRequest) {
 
       if (reminderType == "today") {
         console.log("send email for today");
+        const preview = `Reminder for ${event.name} today`;
+        const headerContent = `You Have an Event Today: ${event.name}`;
+        const mainContent = [
+          `This is a reminder for your event today: ${event.name}`,
+          `${event.description && "Description of the event: "}${event.description}`,
+          `Visit Wishly to manage this event`,
+        ];
+        handleSendEmail(event.user.emails, preview, headerContent, mainContent);
       } else if (reminderType == "tomorrow") {
-        console.log("send email for tomorrow");
+        const preview = `Reminder for ${event.name} tomorrow`;
+        const headerContent = `You Have an Event Tomorrow: ${event.name}`;
+        const mainContent = [
+          `This is a reminder for your event tomorrow: ${event.name}`,
+          `${event.description && "Description of the event: "}${event.description}`,
+          `Visit Wishly to manage this event`,
+        ];
+        handleSendEmail(event.user.emails, preview, headerContent, mainContent);
       } else if (reminderType == "week") {
         console.log("send email for week");
+        const preview = `Reminder for ${event.name} next week`;
+        const headerContent = `You Have an Event Next Week: ${event.name}`;
+        const mainContent = [
+          `This is a reminder for your event next week: ${event.name}`,
+          `${event.description && "Description of the event: "}${event.description}`,
+          `Visit Wishly to manage this event`,
+        ];
+        handleSendEmail(event.user.emails, preview, headerContent, mainContent);
       }
     });
     return NextResponse.json(eventsWithUsers);
@@ -41,5 +66,26 @@ export async function GET(req: NextRequest) {
       { error: "An error occurred while fetching events" },
       { status: 500 },
     ); // Return error with status 500
+  }
+}
+
+async function handleSendEmail(
+  emails: Email[],
+  preview: string,
+  headerContent: string,
+  mainContent: string[],
+) {
+  try {
+    const activeEmails = emails.filter((email) => email.active);
+    const response = await sendReminderEmail({
+      emails: activeEmails,
+      preview,
+      headerContent,
+      mainContent,
+    });
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

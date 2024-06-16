@@ -12,65 +12,42 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 
-interface GithubAccessTokenEmailProps {
-  username?: string;
+interface ReminderEmailTemplateProps {
+  preview: string;
+  headerContent: string;
+  mainContent: string[];
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "";
+const baseUrl = "https://wishly.vercel.app";
 
-export const GithubAccessTokenEmail = ({
-  username,
-}: GithubAccessTokenEmailProps) => (
+export const ReminderEmailTemplate = ({
+  preview,
+  headerContent,
+  mainContent,
+}: ReminderEmailTemplateProps) => (
   <Html>
     <Head />
-    <Preview>
-      A fine-grained personal access token has been added to your account
-    </Preview>
+    <Preview>{preview}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img
-          src={`${baseUrl}/static/github.png`}
-          width="32"
-          height="32"
-          alt="Github"
-        />
+        <Link href={baseUrl} style={logo}>
+          <strong>Wishly</strong>
+        </Link>
 
-        <Text style={title}>
-          <strong>@{username}</strong>, a personal access was created on your
-          account.
-        </Text>
+        <Text style={title}>Hey There, {headerContent}</Text>
 
         <Section style={section}>
-          <Text style={text}>
-            Hey <strong>{username}</strong>!
-          </Text>
-          <Text style={text}>
-            A fine-grained personal access token (<Link>resend</Link>) was
-            recently added to your account.
-          </Text>
-
-          <Button style={button}>View your token</Button>
+          <Text style={text}>Hey There!</Text>
+          <Text style={text}>{mainContent[0]}</Text>
+          <Text style={text}>{mainContent[1]}</Text>
+          <Link href={baseUrl}>{mainContent[2]}</Link>
         </Section>
-        <Text style={links}>
-          <Link style={link}>Your security audit log</Link> ・{" "}
-          <Link style={link}>Contact support</Link>
-        </Text>
-
-        <Text style={footer}>
-          GitHub, Inc. ・88 Colin P Kelly Jr Street ・San Francisco, CA 94107
-        </Text>
       </Container>
     </Body>
   </Html>
 );
 
-GithubAccessTokenEmail.PreviewProps = {
-  username: "alanturing",
-} as GithubAccessTokenEmailProps;
-
-export default GithubAccessTokenEmail;
+export default ReminderEmailTemplate;
 
 const main = {
   backgroundColor: "#ffffff",
@@ -81,12 +58,12 @@ const main = {
 
 const container = {
   maxWidth: "480px",
-  margin: "0 auto",
+  margin: "0 0",
   padding: "20px 0 48px",
 };
 
 const title = {
-  fontSize: "24px",
+  fontSize: "20px",
   lineHeight: 1.25,
 };
 
@@ -97,8 +74,14 @@ const section = {
   textAlign: "center" as const,
 };
 
+const logo = {
+  fontSize: "30px",
+  color: "#83c320",
+  lineHeight: 1.25,
+};
+
 const text = {
-  margin: "0 0 10px 0",
+  margin: "0 0 14px 0",
   textAlign: "left" as const,
 };
 

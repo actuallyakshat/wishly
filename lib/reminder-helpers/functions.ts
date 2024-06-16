@@ -27,7 +27,11 @@ export const fetchEventsForCurrentWeek = async () => {
       ],
     },
     include: {
-      user: true,
+      user: {
+        include: {
+          emails: true,
+        },
+      },
     },
   });
 };

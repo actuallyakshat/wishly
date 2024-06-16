@@ -76,21 +76,17 @@ export async function sendReminderEmail({
     const reminderEmailTemplate = render(
       ReminderEmailTemplate({ preview, headerContent, mainContent }),
     );
-    await Promise.all(
-      emails.map((email) =>
-        mailClient.sendMail(
-          {
-            from: process.env.MAIL_USER as string,
-            to: email.email,
-            subject: "Wishly Reminder",
-            html: reminderEmailTemplate,
-          },
-          (err, message) => {
-            console.log(err || message);
-          },
-        ),
-      ),
-    );
+
+    const sendMail = async (email: Email) => {
+      const response = await mailClient.sendMail({
+        from: process.env.MAIL_USER as string,
+        to: email.email,
+        subject: "Wishly Reminder",
+        html: reminderEmailTemplate,
+      });
+      console.log(response);
+    };
+    await Promise.all(emails.map((email) => sendMail(email)));
     return true;
   } catch (error) {
     console.log(error);

@@ -73,6 +73,7 @@ export async function sendReminderEmail({
 }) {
   try {
     if (emails.length === 0) return;
+    console.log("sending email");
     const reminderEmailTemplate = render(
       ReminderEmailTemplate({ preview, headerContent, mainContent }),
     );

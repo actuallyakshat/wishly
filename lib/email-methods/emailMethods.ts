@@ -28,13 +28,16 @@ export async function sendotp(email: string) {
       15 * 60 * 1000,
     );
 
-    const response = await mailClient.sendMail({
-      from: process.env.MAIL_USER as string,
-      to: email,
-      subject: "One Time Password for Adding a New Email",
-      html: otpTemplate,
-    });
-    console.log(response);
+    const sendMail = async () => {
+      const response = await mailClient.sendMail({
+        from: process.env.MAIL_USER as string,
+        to: email,
+        subject: "One Time Password for Adding a New Email",
+        html: otpTemplate,
+      });
+      console.log(response);
+    };
+    await sendMail();
     return true;
   } catch (error) {
     console.log(error);

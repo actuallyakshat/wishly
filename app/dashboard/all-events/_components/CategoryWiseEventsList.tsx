@@ -42,6 +42,11 @@ export default function CategoryWiseEventsList({
                 {category.events.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
+                {category.events.length == 0 && (
+                  <h1 className="mt-4 text-lg font-medium text-muted-foreground">
+                    You have no events in this category.
+                  </h1>
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>

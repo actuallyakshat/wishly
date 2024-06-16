@@ -21,18 +21,21 @@ model User {
 }
 
 model Event {
-  id              Int       @id @default(autoincrement())
-  name            String
-  date            DateTime
-  description     String?
-  userId          Int
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  category        Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId      Int?
-  disableReminder Boolean   @default(false)
-  reccuring       Boolean   @default(true)
+  id                     Int       @id @default(autoincrement())
+  name                   String
+  date                   DateTime
+  description            String?
+  userId                 Int
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  category               Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId             Int?
+  disableReminder        Boolean   @default(false)
+  reccuring              Boolean   @default(true)
+  reminderSentWeekBefore Boolean   @default(false)
+  reminderSentDayBefore  Boolean   @default(false)
+  reminderSentOnDay      Boolean   @default(false)
 }
 
 model EmailPreference {

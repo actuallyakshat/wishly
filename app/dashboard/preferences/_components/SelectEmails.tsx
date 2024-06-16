@@ -39,6 +39,7 @@ import { sendotp, verifyotp } from "@/lib/email-methods/handleOtp";
 import { addEmail } from "../_actions/actions";
 import { Email } from "@prisma/client";
 import ManageEmailsModal from "./ManageEmailsModal";
+import { toast } from "sonner";
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 
@@ -99,7 +100,7 @@ export function SelectEmails({
             </DropdownMenuCheckboxItem>
           ))}
           <DropdownMenuSeparator />
-          <AddEmailModal setAllEmails={setAllEmails} />
+          <AddEmailModal setAllEmails={setAllEmails} allEmails={allEmails} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -108,8 +109,10 @@ export function SelectEmails({
 
 function AddEmailModal({
   setAllEmails,
+  allEmails,
 }: {
   setAllEmails: React.Dispatch<React.SetStateAction<Email[] | []>>;
+  allEmails: Email[];
 }) {
   const [open, setOpen] = React.useState(false);
   const [verifyOTP, setVerifyOTP] = React.useState(false);
@@ -137,6 +140,7 @@ function AddEmailModal({
           />
         ) : (
           <AddEmail
+            allEmails={allEmails}
             setEmail={setEmail}
             email={email}
             setVerifyOTP={setVerifyOTP}
@@ -151,16 +155,23 @@ function AddEmail({
   setVerifyOTP,
   email,
   setEmail,
+  allEmails,
 }: {
   setVerifyOTP: React.Dispatch<React.SetStateAction<boolean>>;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
+  allEmails: Email[];
 }) {
   const [loading, setLoading] = React.useState(false);
   const emailRef = React.useRef<HTMLInputElement>(null);
   async function handleAddEmail() {
     if (!email) return;
     setLoading(true);
+    if (allEmails.find((e) => e.email === email)) {
+      setLoading(false);
+      toast.error("Email already exists");
+      return;
+    }
     await sendotp(email);
     setLoading(false);
     setVerifyOTP(true);
@@ -187,7 +198,11 @@ function AddEmail({
             type="email"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Button onClick={() => handleAddEmail()} disabled={loading}>
+          <Button
+            onClick={() => handleAddEmail()}
+            type="button"
+            disabled={loading}
+          >
             {loading ? "Loading" : "Add Email"}
           </Button>
         </div>

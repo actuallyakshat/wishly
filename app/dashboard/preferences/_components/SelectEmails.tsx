@@ -267,7 +267,7 @@ function VerifyEmail({
         </InputOTPGroup>
       </InputOTP>
       <DialogFooter>
-        <Button onClick={handleVerification}>
+        <Button onClick={handleVerification} disabled={loading}>
           {loading ? "Loading" : "Submit"}
         </Button>
       </DialogFooter>

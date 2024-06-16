@@ -77,18 +77,52 @@ export async function sendReminderEmail({
       ReminderEmailTemplate({ preview, headerContent, mainContent }),
     );
 
-    const sendMail = async (email: Email) => {
-      const response = await mailClient.sendMail({
-        from: process.env.MAIL_USER as string,
-        to: email.email,
-        subject: "Wishly Reminder",
-        html: reminderEmailTemplate,
+    // const sendMail = async (email: Email) => {
+    //   const response = await mailClient.sendMail({
+    //     from: process.env.MAIL_USER as string,
+    //     to: email.email,
+    //     subject: "Wishly Reminder",
+    //     html: reminderEmailTemplate,
+    //   });
+    //   console.log(response);
+    // };
+    // for (const email of emails) {
+    //   await sendMail(email);
+    // }
+
+    const sendMail = (email: Email) => {
+      return new Promise((resolve, reject) => {
+        const mailData = {
+          from: process.env.MAIL_USER as string,
+          to: email.email,
+          subject: `Wishly Reminder`,
+          html: reminderEmailTemplate,
+        };
+
+        mailClient.sendMail(mailData, (err, info) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            console.log(info);
+            resolve(info);
+          }
+        });
       });
-      console.log(response);
     };
-    for (const email of emails) {
-      await sendMail(email);
-    }
+
+    const sendAllMailsConcurrently = async (emails: Email[]) => {
+      const promises = emails.map((email) => sendMail(email));
+
+      try {
+        await Promise.all(promises);
+      } catch (error) {
+        console.error("One or more emails failed to send:", error);
+      }
+    };
+
+    await sendAllMailsConcurrently(emails);
+
     return true;
   } catch (error) {
     console.log(error);

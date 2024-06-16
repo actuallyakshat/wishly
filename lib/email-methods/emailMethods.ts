@@ -90,29 +90,24 @@ export async function sendReminderEmail({
     //   await sendMail(email);
     // }
 
-    const sendMail = (email: Email) => {
-      return new Promise((resolve, reject) => {
-        const mailData = {
-          from: process.env.MAIL_USER as string,
-          to: email.email,
-          subject: `Wishly Reminder`,
-          html: reminderEmailTemplate,
-        };
+    const sendMail = async (email: string) => {
+      const mailOptions = {
+        from: process.env.MAIL_USER as string,
+        to: email,
+        subject: "Wishly Reminder",
+        html: reminderEmailTemplate,
+      };
 
-        mailClient.sendMail(mailData, (err, info) => {
-          if (err) {
-            console.error(err);
-            reject(err);
-          } else {
-            console.log(info);
-            resolve(info);
-          }
-        });
-      });
+      try {
+        const response = await mailClient.sendMail(mailOptions);
+        console.log(`Email sent to ${email}:`, response);
+      } catch (error) {
+        console.error(`Failed to send email to ${email}:`, error);
+      }
     };
 
     const sendAllMailsConcurrently = async (emails: Email[]) => {
-      const promises = emails.map((email) => sendMail(email));
+      const promises = emails.map((email) => sendMail(email.email));
 
       try {
         await Promise.all(promises);

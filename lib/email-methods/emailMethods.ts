@@ -78,46 +78,44 @@ export async function sendReminderEmail({
       ReminderEmailTemplate({ preview, headerContent, mainContent }),
     );
 
-    // const sendMail = async (email: Email) => {
-    //   const response = await mailClient.sendMail({
+    // const sendMail = async (email: string) => {
+    //   const mailOptions = {
     //     from: process.env.MAIL_USER as string,
-    //     to: email.email,
+    //     to: email,
     //     subject: "Wishly Reminder",
     //     html: reminderEmailTemplate,
-    //   });
-    //   console.log(response);
-    // };
-    // for (const email of emails) {
-    //   await sendMail(email);
-    // }
+    //   };
 
-    const sendMail = async (email: string) => {
-      const mailOptions = {
+    //   try {
+    //     const response = await mailClient.sendMail(mailOptions);
+    //     console.log(`Email sent to ${email}:`, response);
+    //   } catch (error) {
+    //     console.error(`Failed to send email to ${email}:`, error);
+    //   }
+    // };
+
+    // const sendAllMailsConcurrently = async (emails: Email[]) => {
+    //   const promises = emails.map((email) => sendMail(email.email));
+
+    //   try {
+    //     await Promise.all(promises);
+    //   } catch (error) {
+    //     console.error("One or more emails failed to send:", error);
+    //   }
+    // };
+
+    // await sendAllMailsConcurrently(emails);
+    const sendMail = async () => {
+      const response = await mailClient.sendMail({
         from: process.env.MAIL_USER as string,
-        to: email,
+        to: emails[0].email,
         subject: "Wishly Reminder",
         html: reminderEmailTemplate,
-      };
-
-      try {
-        const response = await mailClient.sendMail(mailOptions);
-        console.log(`Email sent to ${email}:`, response);
-      } catch (error) {
-        console.error(`Failed to send email to ${email}:`, error);
-      }
+      });
+      console.log(response);
     };
-
-    const sendAllMailsConcurrently = async (emails: Email[]) => {
-      const promises = emails.map((email) => sendMail(email.email));
-
-      try {
-        await Promise.all(promises);
-      } catch (error) {
-        console.error("One or more emails failed to send:", error);
-      }
-    };
-
-    await sendAllMailsConcurrently(emails);
+    await sendMail();
+    return true;
 
     return true;
   } catch (error) {

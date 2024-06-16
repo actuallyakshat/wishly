@@ -105,6 +105,7 @@ export async function sendReminderEmail({
     // };
 
     // await sendAllMailsConcurrently(emails);
+    console.log(emails[0].email);
     const sendMail = async () => {
       const response = await mailClient.sendMail({
         from: process.env.MAIL_USER as string,

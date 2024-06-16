@@ -13,6 +13,9 @@ type OTPStoreType = {
 const OTPStore: OTPStoreType = {};
 export async function sendotp(email: string) {
   try {
+    console.log(process.env.MAIL_USER);
+    console.log(process.env.MAIL_PASS);
+    console.log(process.env.MAIL_HOST);
     console.log(OTPStore);
     if (!email) return;
     const OTP = generateOTP();

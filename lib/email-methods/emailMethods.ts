@@ -1,11 +1,11 @@
 "use server";
 
 import generateOTP from "../generateOtp";
-import { mailClient } from "../mail";
 import { render } from "@react-email/components";
 import OTPEmailTemplate from "@/lib/email-templates/OTPEmailTemplate";
 import ReminderEmailTemplate from "../email-templates/ReminderTemplate";
 import { Email } from "@prisma/client";
+import { sendEmail } from "../mail";
 
 type OTPStoreType = {
   [email: string]: number;
@@ -28,16 +28,22 @@ export async function sendotp(email: string) {
       15 * 60 * 1000,
     );
 
-    const sendMail = async () => {
-      const response = await mailClient.sendMail({
-        from: process.env.MAIL_USER as string,
-        to: email,
-        subject: "One Time Password for Adding a New Email",
-        html: otpTemplate,
-      });
-      console.log(response);
-    };
-    await sendMail();
+    // const sendMail = async () => {
+    //   const response = await mailClient.sendMail({
+    //     from: process.env.MAIL_USER as string,
+    //     to: email,
+    //     subject: "One Time Password for Adding a New Email",
+    //     html: otpTemplate,
+    //   });
+    //   console.log(response);
+    // };
+    // await sendMail();
+
+    await sendEmail({
+      to: email,
+      subject: "One Time Password for Adding a New Email",
+      html: otpTemplate,
+    });
     return true;
   } catch (error) {
     console.log(error);
@@ -106,16 +112,11 @@ export async function sendReminderEmail({
 
     // await sendAllMailsConcurrently(emails);
     console.log(emails[0].email);
-    const sendMail = async () => {
-      const response = await mailClient.sendMail({
-        from: process.env.MAIL_USER as string,
-        to: emails[0].email,
-        subject: "Wishly Reminder",
-        html: reminderEmailTemplate,
-      });
-      console.log(response);
-    };
-    await sendMail();
+    await sendEmail({
+      to: emails[0].email,
+      subject: "Wishly Reminder",
+      html: reminderEmailTemplate,
+    });
     return true;
   } catch (error) {
     console.log(error);

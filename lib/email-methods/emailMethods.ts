@@ -116,8 +116,6 @@ export async function sendReminderEmail({
     };
     await sendMail();
     return true;
-
-    return true;
   } catch (error) {
     console.log(error);
     return false;

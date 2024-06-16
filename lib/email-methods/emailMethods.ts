@@ -13,10 +13,6 @@ type OTPStoreType = {
 const OTPStore: OTPStoreType = {};
 export async function sendotp(email: string) {
   try {
-    console.log(process.env.MAIL_USER);
-    console.log(process.env.MAIL_PASS);
-    console.log(process.env.MAIL_HOST);
-    console.log(OTPStore);
     if (!email) return;
     const OTP = generateOTP();
     OTPStore[email] = OTP;
@@ -32,17 +28,14 @@ export async function sendotp(email: string) {
       15 * 60 * 1000,
     );
 
-    await mailClient.sendMail(
-      {
-        from: process.env.MAIL_USER as string,
-        to: email,
-        subject: "One Time Password for Adding a New Email",
-        html: otpTemplate,
-      },
-      (err, message) => {
-        console.log(err || message);
-      },
-    );
+    const response = await mailClient.sendMail({
+      from: process.env.MAIL_USER as string,
+      to: email,
+      subject: "One Time Password for Adding a New Email",
+      html: otpTemplate,
+    });
+    console.log(response);
+    return true;
   } catch (error) {
     console.log(error);
     throw error;

@@ -165,7 +165,10 @@ function AddEmail({
   const [loading, setLoading] = React.useState(false);
   const emailRef = React.useRef<HTMLInputElement>(null);
   async function handleAddEmail() {
-    if (!email) return;
+    if (!email) {
+      toast.error("Please enter an email");
+      return;
+    }
     setLoading(true);
     if (allEmails.find((e) => e.email === email)) {
       setLoading(false);

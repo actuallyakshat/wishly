@@ -1,4 +1,6 @@
+export const maxDuration = 59;
 export const revalidate = 0;
+export const dynamic = "force-dynamic";
 import ReminderEmailTemplate from "@/lib/email-templates/ReminderTemplate";
 import { sendEmail } from "@/lib/mail";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";

@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
   try {
     const eventsWithUsers = await fetchEventsForCurrentWeek();
     console.log(eventsWithUsers);
-
     for (const event of eventsWithUsers) {
       const userTimeZone = event.user.timeZone || "UTC";
       console.log(event.user.timeZone);
@@ -31,7 +30,7 @@ export async function GET(req: NextRequest) {
       } else if (eventDate.isSame(weekLater, "day")) {
         reminderType = "week";
       } else if (eventDate.isBefore(now)) {
-        return;
+        reminderType = "past";
       } else {
         reminderType = "futureEvent";
       }
@@ -44,7 +43,7 @@ export async function GET(req: NextRequest) {
           !event.user.emailPreferences?.emailOnDate ||
           event.reminderSentOnDay
         )
-          return;
+          continue;
 
         console.log("send email for today");
         const preview = `Reminder for ${event.name} today`;
@@ -66,7 +65,7 @@ export async function GET(req: NextRequest) {
           !event.user.emailPreferences?.emailOneDayBefore ||
           event.reminderSentDayBefore
         )
-          return;
+          continue;
         const preview = `Reminder for ${event.name} tomorrow`;
         const headerContent = `You Have an Event Tomorrow: ${event.name}`;
         const mainContent = [
@@ -86,7 +85,7 @@ export async function GET(req: NextRequest) {
           !event.user.emailPreferences?.emailOneWeekBefore ||
           event.reminderSentWeekBefore
         )
-          return;
+          continue;
         console.log("send email for week");
         const preview = `Reminder for ${event.name} next week`;
         const headerContent = `You Have an Event Next Week: ${event.name}`;

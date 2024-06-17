@@ -86,3 +86,18 @@ export async function sendReminderEmail({
     return false;
   }
 }
+
+export async function testEmail() {
+  try {
+    await sendEmail({
+      //@ts-ignore
+      to: ["akshatdubey0808@gmail.com", "actuallyakshat@gmail.com"],
+      subject: "Testing",
+      html: "<h1>Testing</h1>",
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}

@@ -15,13 +15,33 @@ export async function GET(req: NextRequest) {
     console.log(eventsWithUsers);
     for (const event of eventsWithUsers) {
       const userTimeZone = event.user.timeZone || "UTC";
+      const currentYear = moment.tz(userTimeZone).year();
+      const eventYear = moment.tz(event.date, userTimeZone).year();
+      if (!event.reccuring && eventYear != currentYear) {
+        continue;
+      }
+
+      if (event.reccuring && eventYear != currentYear) {
+        await prisma.event.update({
+          where: { id: event.id },
+          data: {
+            reminderSentOnDay: false,
+            reminderSentDayBefore: false,
+            reminderSentWeekBefore: false,
+            date: moment(event.date).set("year", currentYear).toDate(),
+          },
+        });
+      }
+
       console.log(event.user.timeZone);
       const now = moment.tz(userTimeZone).startOf("day");
       const tomorrow = moment.tz(userTimeZone).add(1, "day").startOf("day");
       const weekLater = moment.tz(userTimeZone).add(7, "days").startOf("day");
 
       let reminderType;
-      const eventDate = moment.tz(event.date, userTimeZone);
+      const eventDate = moment
+        .tz(event.date, userTimeZone)
+        .set("year", currentYear);
 
       if (eventDate.isSame(now, "day")) {
         reminderType = "today";

@@ -38,7 +38,7 @@ export default function ViewEventModal({
             <Badge>
               {moment(event.date)
                 .tz(user?.timeZone || "UTC")
-                .format("D/M")}
+                .format("Do MMMM")}
             </Badge>
             {event.category?.name ? (
               <Badge>{event.category?.name}</Badge>

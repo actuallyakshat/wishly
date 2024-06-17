@@ -13,7 +13,11 @@ export default async function CategoriesList() {
     include: {
       categories: {
         include: {
-          events: true,
+          events: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
         },
       },
     },

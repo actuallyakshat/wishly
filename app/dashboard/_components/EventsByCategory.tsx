@@ -29,7 +29,7 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {data?.map((category: Category) => (
+        {data?.slice(0, 5).map((category: Category) => (
           <div
             key={category.id}
             className="h-full w-full rounded-lg border p-4 shadow-sm"
@@ -47,7 +47,7 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
             </div>
 
             <div className="mb-1 mt-3">
-              {category.events?.map((event: Event) => (
+              {category.events?.slice(0, 5).map((event: Event) => (
                 <div key={event.id}>
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">{event.name}</h4>
@@ -75,6 +75,13 @@ export default function EventsByCategory({ data }: { data: Category[] }) {
           </h2>
         )}
       </div>
+      {data.length > 5 && (
+        <Link href={"/dashboard/manage-categories"}>
+          <Button className="m-0 mt-2 p-0" variant={"link"}>
+            View All
+          </Button>
+        </Link>
+      )}
     </section>
   );
 }

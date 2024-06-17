@@ -21,7 +21,7 @@ export default async function page() {
         userId,
       },
       orderBy: {
-        date: "asc",
+        createdAt: "desc",
       },
       include: {
         category: true,
@@ -32,7 +32,11 @@ export default async function page() {
         userId,
       },
       include: {
-        events: true,
+        events: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
   }

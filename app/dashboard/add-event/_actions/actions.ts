@@ -29,7 +29,7 @@ export async function getAllCategories(userId: number) {
         user: true,
         events: {
           orderBy: {
-            date: "asc",
+            createdAt: "desc",
           },
         },
       },

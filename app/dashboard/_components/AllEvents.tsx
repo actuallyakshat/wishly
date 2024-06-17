@@ -55,7 +55,9 @@ export default function AllEvents({
       </div>
       <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {!searchQuery &&
-          allEvents?.map((event) => <EventCard key={event.id} event={event} />)}
+          allEvents
+            ?.slice(0, 6)
+            .map((event) => <EventCard key={event.id} event={event} />)}
         {searchQuery ? (
           filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
@@ -66,10 +68,18 @@ export default function AllEvents({
           )
         ) : null}
       </div>
+
       {allEvents?.length === 0 && (
         <h4 className="mt-2 text-lg font-medium text-muted-foreground">
           You have no events yet.
         </h4>
+      )}
+      {allEvents?.length > 6 && (
+        <Link href="/dashboard/all-events">
+          <Button variant={"link"} className="m-0 mt-2 p-0">
+            View All
+          </Button>
+        </Link>
       )}
     </section>
   );

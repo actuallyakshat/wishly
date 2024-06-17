@@ -7,7 +7,9 @@ import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuSeparator,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -33,17 +35,19 @@ export function ThemeToggler() {
         </div> */}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Select Theme</DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => setTheme("light")}
           className="font-medium"
         >
-          Light Mode
+          Light
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme("dark")}
           className="font-medium"
         >
-          Dark Mode
+          Dark
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

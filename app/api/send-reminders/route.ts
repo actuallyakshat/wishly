@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
     const eventsWithUsers = await fetchEventsForCurrentWeek();
     eventsWithUsers.forEach((event) => {
       const userTimeZone = event.user.timeZone || "UTC";
+      console.log(event.user.timeZone);
       const now = moment.tz(userTimeZone).startOf("day");
       const tomorrow = moment.tz(userTimeZone).add(1, "day").startOf("day");
       const weekLater = moment.tz(userTimeZone).add(7, "days").startOf("day");

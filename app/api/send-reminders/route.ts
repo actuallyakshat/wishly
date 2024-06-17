@@ -90,15 +90,22 @@ async function handleSendEmail(
     const reminderTemplate = render(
       ReminderEmailTemplate({ preview, headerContent, mainContent }),
     );
+
     const payload = {
-      from: process.env.MAIL_FROM as string,
+      from: process.env.MAIL_USER as string,
       to: activeEmails,
       subject: "Wishly Reminder",
       html: reminderTemplate,
     };
+
+    console.log("Payload prepared:", payload);
+    console.log("Sending email...");
+
     await sendEmail(payload);
+
+    console.log("Email sent successfully.");
   } catch (error) {
-    console.log(error);
+    console.error("Error in handleSendEmail:", error);
     throw error;
   }
 }
@@ -119,31 +126,23 @@ async function sendEmail(payload: {
     },
   });
 
-  await new Promise((resolve, reject) => {
-    // verify connection configuration
-    transporter.verify(function (error, success) {
-      if (error) {
-        console.log(error);
-        reject(error);
-      } else {
-        console.log("Server is ready to take our messages");
-        resolve(success);
-      }
-    });
-  });
+  try {
+    // Verify connection configuration
+    await transporter.verify();
+    console.log("Server is ready to take our messages");
+  } catch (error) {
+    console.error("Error verifying transporter:", error);
+    throw error; // Re-throw the error to be caught in handleSendEmail
+  }
 
   console.log("Sending email with transporter:", transporter.options);
 
-  await new Promise((resolve, reject) => {
-    // send mail
-    transporter.sendMail(payload, (err, info) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        console.log(info);
-        resolve(info);
-      }
-    });
-  });
+  try {
+    // Send mail
+    const info = await transporter.sendMail(payload);
+    console.log("Email sent successfully:", info);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error; // Re-throw the error to be caught in handleSendEmail
+  }
 }

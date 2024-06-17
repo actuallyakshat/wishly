@@ -1,5 +1,5 @@
 export const revalidate = 0;
-import { sendReminderEmail } from "@/lib/email-methods/emailMethods";
+import { sendReminderEmail, testEmail } from "@/lib/email-methods/emailMethods";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";
 import { Email } from "@prisma/client";
 import moment from "moment-timezone";
@@ -102,6 +102,7 @@ async function handleSendEmail(
     console.log("Sending email...");
 
     await sendEmail(payload);
+    await testEmail();
 
     console.log("Email sent successfully.");
   } catch (error) {

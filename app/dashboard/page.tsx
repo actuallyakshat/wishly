@@ -4,11 +4,9 @@ import AllEvents from "./_components/AllEvents";
 import { currentUser } from "@clerk/nextjs/server";
 import { getUserId } from "./_actions/actions";
 import prisma from "@/db";
-import { Event } from "@prisma/client";
 import EventsByCategory from "./_components/EventsByCategory";
 import { getAllCategories } from "./add-event/_actions/actions";
 import { EventWithCategory } from "@/lib/types";
-import Test from "../_components/Test";
 export default async function Dashboard() {
   const user = await currentUser();
   const userId = await getUserId(user!.primaryEmailAddress!.emailAddress);
@@ -32,7 +30,6 @@ export default async function Dashboard() {
 
   return (
     <main className="flex flex-col gap-8 p-12">
-      <Test />
       <UpcomingEvents data={eventsThisMonth} />
       <EventsByCategory data={eventsbycategory} />
       <AllEvents allEvents={allEvents} />

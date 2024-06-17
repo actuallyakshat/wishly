@@ -3,8 +3,6 @@
 import generateOTP from "../generateOtp";
 import { render } from "@react-email/components";
 import OTPEmailTemplate from "@/lib/email-templates/OTPEmailTemplate";
-import ReminderEmailTemplate from "../email-templates/ReminderTemplate";
-import { Email } from "@prisma/client";
 import { sendEmail } from "../mail";
 type OTPStoreType = {
   [email: string]: number;
@@ -51,53 +49,5 @@ export async function verifyotp(email: string, otp: number) {
   } catch (error) {
     console.log(error);
     throw error;
-  }
-}
-
-export async function sendReminderEmail({
-  emails,
-  preview,
-  headerContent,
-  mainContent,
-}: {
-  emails: Email[];
-  preview: string;
-  headerContent: string;
-  mainContent: string[];
-}) {
-  try {
-    if (emails.length === 0) return;
-    const extractedIds = emails.map((email) => email.email);
-    console.log("sending email");
-    const reminderEmailTemplate = render(
-      ReminderEmailTemplate({ preview, headerContent, mainContent }),
-    );
-
-    await sendEmail({
-      from: process.env.MAIL_USER,
-      //@ts-ignore
-      to: extractedIds,
-      subject: "Wishly Reminder",
-      html: reminderEmailTemplate,
-    });
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
-export async function testEmail() {
-  try {
-    await sendEmail({
-      //@ts-ignore
-      to: ["akshatdubey0808@gmail.com", "actuallyakshat@gmail.com"],
-      subject: "Testing",
-      html: "<h1>Testing</h1>",
-    });
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
   }
 }

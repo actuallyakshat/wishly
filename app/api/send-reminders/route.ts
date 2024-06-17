@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const eventsWithUsers = await fetchEventsForCurrentWeek();
+    console.log(eventsWithUsers);
+
     for (const event of eventsWithUsers) {
       const userTimeZone = event.user.timeZone || "UTC";
       console.log(event.user.timeZone);
@@ -30,13 +32,13 @@ export async function GET(req: NextRequest) {
       } else {
         reminderType = "futureEvent";
       }
-
+      const emails = event.user.emails
+        .filter((email) => email.active)
+        .map((email) => email.email);
       //The event is today
       if (reminderType == "today") {
         if (!event.user.emailPreferences?.emailOnDate) return;
-        const emails = event.user.emails
-          .filter((email) => email.active)
-          .map((email) => email.email);
+
         console.log("send email for today");
         const preview = `Reminder for ${event.name} today`;
         const headerContent = `You Have an Event Today: ${event.name}`;
@@ -45,19 +47,7 @@ export async function GET(req: NextRequest) {
           `${event.description && "Description of the event: "}${event.description}`,
           `Visit Wishly to manage this event`,
         ];
-        const template = render(
-          ReminderEmailTemplate({ preview, headerContent, mainContent }),
-        );
-        await sendEmail({
-          //@ts-ignore
-          to: emails,
-          subject: preview,
-          html: render(
-            ReminderEmailTemplate({ preview, headerContent, mainContent }),
-          ),
-        });
-
-        // handleSendEmail(event.user.emails, preview, headerContent, mainContent);
+        await handleSendEmail(emails, preview, headerContent, mainContent);
       }
       //The event is tomorrow
       else if (reminderType == "tomorrow") {
@@ -69,7 +59,7 @@ export async function GET(req: NextRequest) {
           `${event.description && "Description of the event: "}${event.description}`,
           `Visit Wishly to manage this event`,
         ];
-        // handleSendEmail(event.user.emails, preview, headerContent, mainContent);
+        await handleSendEmail(emails, preview, headerContent, mainContent);
       }
       //The event is next week
       else if (reminderType == "week") {
@@ -82,15 +72,36 @@ export async function GET(req: NextRequest) {
           `${event.description && "Description of the event: "}${event.description}`,
           `Visit Wishly to manage this event`,
         ];
-        // handleSendEmail(event.user.emails, preview, headerContent, mainContent);
+        await handleSendEmail(emails, preview, headerContent, mainContent);
       }
     }
-    return NextResponse.json(eventsWithUsers);
+    return NextResponse.json({ status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
       { error: "An error occurred while fetching events" },
       { status: 500 },
-    ); // Return error with status 500
+    );
+  }
+}
+
+async function handleSendEmail(
+  emails: string[],
+  preview: string,
+  headerContent: string,
+  mainContent: string[],
+) {
+  try {
+    const template = render(
+      ReminderEmailTemplate({ preview, headerContent, mainContent }),
+    );
+    await sendEmail({
+      //@ts-ignore
+      to: emails,
+      subject: "Wishly Reminder",
+      html: template,
+    });
+  } catch (error) {
+    console.error(error);
   }
 }

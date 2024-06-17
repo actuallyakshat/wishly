@@ -1,4 +1,3 @@
-import { Event } from "@prisma/client";
 import React from "react";
 import {
   Dialog,
@@ -12,12 +11,14 @@ import { Button } from "@/components/ui/button";
 import { EventWithCategory } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { BellOff } from "lucide-react";
+import { useClientAuth } from "@/providers/auth-provider";
+import moment from "moment-timezone";
 export default function ViewEventModal({
   event,
 }: {
   event: EventWithCategory;
 }) {
-  console.log(event);
+  const { user } = useClientAuth();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -35,10 +36,9 @@ export default function ViewEventModal({
           </DialogTitle>
           <div className="mt-1 flex items-center gap-3">
             <Badge>
-              {event.date.toLocaleDateString(undefined, {
-                month: "long",
-                day: "numeric",
-              })}
+              {moment(event.date)
+                .tz(user?.timeZone || "UTC")
+                .format("D/M")}
             </Badge>
             {event.category?.name ? (
               <Badge>{event.category?.name}</Badge>

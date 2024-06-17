@@ -66,6 +66,11 @@ export default function AllEvents({
           )
         ) : null}
       </div>
+      {allEvents?.length === 0 && (
+        <h4 className="mt-2 text-lg font-medium text-muted-foreground">
+          You have no events yet.
+        </h4>
+      )}
     </section>
   );
 }

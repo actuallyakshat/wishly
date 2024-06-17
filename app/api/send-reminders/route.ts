@@ -3,7 +3,10 @@ import { sendReminderEmail } from "@/lib/email-methods/emailMethods";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";
 import { Email } from "@prisma/client";
 import moment from "moment-timezone";
+import nodemailer from "nodemailer";
 import { NextRequest, NextResponse } from "next/server";
+import { render } from "@react-email/components";
+import ReminderEmailTemplate from "@/lib/email-templates/ReminderTemplate";
 export async function GET(req: NextRequest) {
   try {
     const eventsWithUsers = await fetchEventsForCurrentWeek();
@@ -80,16 +83,67 @@ async function handleSendEmail(
   mainContent: string[],
 ) {
   try {
-    const activeEmails = emails.filter((email) => email.active);
-    const response = await sendReminderEmail({
-      emails: activeEmails,
-      preview,
-      headerContent,
-      mainContent,
-    });
-    console.log(response);
+    const activeEmails = emails
+      .filter((email) => email.active)
+      .map((email) => email.email);
+
+    const reminderTemplate = render(
+      ReminderEmailTemplate({ preview, headerContent, mainContent }),
+    );
+    const payload = {
+      from: process.env.MAIL_FROM as string,
+      to: activeEmails,
+      subject: "Wishly Reminder",
+      html: reminderTemplate,
+    };
+    await sendEmail(payload);
   } catch (error) {
     console.log(error);
     throw error;
   }
+}
+
+async function sendEmail(payload: {
+  from: string;
+  to: string[];
+  subject: string;
+  html: string;
+}) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+  await new Promise((resolve, reject) => {
+    // verify connection configuration
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
+    });
+  });
+
+  console.log("Sending email with transporter:", transporter.options);
+
+  await new Promise((resolve, reject) => {
+    // send mail
+    transporter.sendMail(payload, (err, info) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        console.log(info);
+        resolve(info);
+      }
+    });
+  });
 }

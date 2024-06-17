@@ -1,6 +1,7 @@
 export const maxDuration = 59;
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
+import prisma from "@/db";
 import ReminderEmailTemplate from "@/lib/email-templates/ReminderTemplate";
 import { sendEmail } from "@/lib/mail";
 import { fetchEventsForCurrentWeek } from "@/lib/reminder-helpers/functions";
@@ -39,7 +40,11 @@ export async function GET(req: NextRequest) {
         .map((email) => email.email);
       //The event is today
       if (reminderType == "today") {
-        if (!event.user.emailPreferences?.emailOnDate) return;
+        if (
+          !event.user.emailPreferences?.emailOnDate ||
+          event.reminderSentOnDay
+        )
+          return;
 
         console.log("send email for today");
         const preview = `Reminder for ${event.name} today`;
@@ -50,10 +55,18 @@ export async function GET(req: NextRequest) {
           `Visit Wishly to manage this event`,
         ];
         await handleSendEmail(emails, preview, headerContent, mainContent);
+        await prisma.event.update({
+          where: { id: event.id },
+          data: { reminderSentOnDay: true },
+        });
       }
       //The event is tomorrow
       else if (reminderType == "tomorrow") {
-        if (!event.user.emailPreferences?.emailOneDayBefore) return;
+        if (
+          !event.user.emailPreferences?.emailOneDayBefore ||
+          event.reminderSentDayBefore
+        )
+          return;
         const preview = `Reminder for ${event.name} tomorrow`;
         const headerContent = `You Have an Event Tomorrow: ${event.name}`;
         const mainContent = [
@@ -62,10 +75,18 @@ export async function GET(req: NextRequest) {
           `Visit Wishly to manage this event`,
         ];
         await handleSendEmail(emails, preview, headerContent, mainContent);
+        await prisma.event.update({
+          where: { id: event.id },
+          data: { reminderSentDayBefore: true },
+        });
       }
       //The event is next week
       else if (reminderType == "week") {
-        if (!event.user.emailPreferences?.emailOneWeekBefore) return;
+        if (
+          !event.user.emailPreferences?.emailOneWeekBefore ||
+          event.reminderSentWeekBefore
+        )
+          return;
         console.log("send email for week");
         const preview = `Reminder for ${event.name} next week`;
         const headerContent = `You Have an Event Next Week: ${event.name}`;
@@ -75,6 +96,10 @@ export async function GET(req: NextRequest) {
           `Visit Wishly to manage this event`,
         ];
         await handleSendEmail(emails, preview, headerContent, mainContent);
+        await prisma.event.update({
+          where: { id: event.id },
+          data: { reminderSentWeekBefore: true },
+        });
       }
     }
     return NextResponse.json({ status: 200 });

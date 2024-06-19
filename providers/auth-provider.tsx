@@ -2,7 +2,7 @@
 import { getUser } from "@/app/_actions/actions";
 import Loading from "@/app/loading";
 import { useUser } from "@clerk/nextjs";
-import { Email, EmailPreference, User } from "@prisma/client";
+import { Category, Email, EmailPreference, User } from "@prisma/client";
 import React, {
   createContext,
   useState,
@@ -21,6 +21,7 @@ interface AuthContextType {
 interface clientUserType extends User {
   emailPreferences: EmailPreference;
   emails: Email[];
+  categories: Category[];
   timeZone: string | null;
 }
 

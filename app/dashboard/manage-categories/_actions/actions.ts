@@ -13,15 +13,28 @@ export async function removeCategory(id: number) {
   }
 }
 
-export async function editCategory(id: number, name: string) {
+export async function editCategory(userId: number, id: number, name: string) {
   try {
-    await prisma.category.update({
-      where: { id: id },
-      data: { name: name },
+    const nameUsedAlready = await prisma.category.findUnique({
+      where: { name: name, userId: userId },
     });
-    revalidatePath("/dashboard");
-    return true;
+    if (nameUsedAlready) {
+      return { success: false, message: "Category name already used" };
+    }
+    const existingCategory = await prisma.category.findUnique({
+      where: { id: id, userId: userId },
+    });
+    if (existingCategory) {
+      await prisma.category.update({
+        where: { id: id },
+        data: { name: name },
+      });
+      revalidatePath("/dashboard");
+      return { success: true, message: "Category updated" };
+    } else {
+      return { success: false, message: "Category not found" };
+    }
   } catch (e) {
-    return false;
+    return { success: false, message: "Something went wrong" };
   }
 }

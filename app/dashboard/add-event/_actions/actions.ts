@@ -5,6 +5,15 @@ import { revalidatePath } from "next/cache";
 
 export async function addCategory(name: string, userId: number) {
   try {
+    const existingCategory = await prisma.category.findFirst({
+      where: {
+        name,
+        userId,
+      },
+    });
+    if (existingCategory) {
+      throw new Error("Category already exists");
+    }
     const response = prisma.category.create({
       data: {
         name,

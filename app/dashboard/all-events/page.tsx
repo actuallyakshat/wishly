@@ -14,7 +14,6 @@ export default async function page() {
   const userId = await getUserId(user!.primaryEmailAddress!.emailAddress);
   let events: EventWithCategory[] | [] = [];
   let categories: Category[] | [] = [];
-  let fetchCompleteFlag = false;
   if (userId) {
     events = await prisma.event.findMany({
       where: {
@@ -33,6 +32,9 @@ export default async function page() {
       },
       include: {
         events: {
+          include: {
+            category: true,
+          },
           orderBy: {
             createdAt: "desc",
           },
@@ -40,15 +42,9 @@ export default async function page() {
       },
     });
   }
-  fetchCompleteFlag = true;
 
-  if (!fetchCompleteFlag) {
-    return (
-      <h1 className="p-12 text-xl font-semibold text-muted-foreground">
-        Loading all events...
-      </h1>
-    );
-  }
+  console.log(events);
+
   return (
     <main className="w-full p-12">
       <div className="flex items-center justify-between gap-4">
@@ -74,7 +70,7 @@ export default async function page() {
           <MonthWiseEventsList data={events} />
         </TabsContent>
         <TabsContent value="category-wise">
-          <CategoryWiseEventsList data={events} categories={categories} />
+          <CategoryWiseEventsList categories={categories} events={events} />
         </TabsContent>
       </Tabs>
     </main>

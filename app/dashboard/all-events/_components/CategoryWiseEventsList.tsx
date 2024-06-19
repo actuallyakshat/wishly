@@ -15,16 +15,16 @@ interface Category {
   events: EventWithCategory[];
 }
 export default function CategoryWiseEventsList({
-  data,
   categories,
+  events,
 }: {
-  data: EventWithCategory[];
   categories: any;
+  events: EventWithCategory[];
 }) {
   console.log(categories);
   return (
     <div>
-      <Accordion type="single" collapsible>
+      <Accordion type="multiple">
         {categories.map((category: Category) => (
           <AccordionItem key={category.id} value={category.id.toString()}>
             <AccordionTrigger>
@@ -51,6 +51,28 @@ export default function CategoryWiseEventsList({
             </AccordionContent>
           </AccordionItem>
         ))}
+        <AccordionItem value="all">
+          <AccordionTrigger>
+            <div className="flex items-center gap-3">
+              <h3>Uncategorised</h3>
+              <span className="text-sm text-muted-foreground">
+                {events.filter((event) => event.category?.id == null).length ==
+                1
+                  ? "1 event"
+                  : `${events.filter((event) => event.category?.id == null).length} events`}
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {events
+                .filter((event) => event.category?.id == null)
+                .map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
       </Accordion>
 
       {categories.length == 0 && (

@@ -22,7 +22,10 @@ export default function AllEvents({
     if (searchQuery) {
       setFilteredEvents(
         allEvents.filter((event) => {
-          return event.name.toLowerCase().includes(searchQuery.toLowerCase());
+          return (
+            event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            event.description?.toLowerCase().includes(searchQuery.toLowerCase())
+          );
         }),
       );
     }

@@ -47,7 +47,7 @@ export default function MonthWiseEventsList({
     <div>
       {months.map((month) => (
         <div key={month} className="mt-4">
-          <Accordion type="single" collapsible>
+          <Accordion type="multiple">
             <AccordionItem value={month}>
               <AccordionTrigger className="flex items-center justify-start gap-3">
                 <h2 className="text-lg font-medium">{month}</h2>

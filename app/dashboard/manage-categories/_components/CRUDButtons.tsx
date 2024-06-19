@@ -14,13 +14,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { editCategory, removeCategory } from "../_actions/actions";
+import { Category } from "@prisma/client";
+import { toast } from "sonner";
 
 export default function CRUDButtons({
   name,
   id,
+  categories,
+  userId,
 }: {
   name: string;
   id: number;
+  categories: Category[];
+  userId: number;
 }) {
   const [newName, setNewName] = React.useState(name);
   const [loading, setLoading] = React.useState(false);
@@ -30,14 +36,16 @@ export default function CRUDButtons({
 
   const handleUpdateCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Submitting form...");
     setLoading(true);
     try {
-      const res = await editCategory(id, newName);
-      if (res) {
+      const res = await editCategory(userId, id, newName);
+      if (res.success) {
         setLoading(false);
         setOpenEditModal(false);
+        console.log("Category updated successfully");
       } else {
-        console.log("Something went wrong");
+        toast.error(res.message);
         setLoading(false);
       }
     } catch (e) {
@@ -59,13 +67,18 @@ export default function CRUDButtons({
   };
 
   return (
-    <div
-      className="flex items-center justify-center gap-3"
-      onClick={(e) => e.preventDefault()}
-    >
+    <div className="flex items-center justify-center gap-3">
       <Dialog open={openEditModal} onOpenChange={setOpenEditModal}>
         <DialogTrigger asChild>
-          <Button variant={"link"} className="h-fit p-0">
+          <Button
+            variant={"link"}
+            className="h-fit p-0"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpenEditModal(true);
+            }}
+          >
             <Edit2Icon size={18} className="cursor-pointer" />
           </Button>
         </DialogTrigger>
@@ -74,14 +87,17 @@ export default function CRUDButtons({
             <DialogTitle>Edit Category</DialogTitle>
             <DialogDescription>Edit the name of the category</DialogDescription>
           </DialogHeader>
-          <form onSubmit={(e) => handleUpdateCategory(e)}>
+          <form onSubmit={handleUpdateCategory}>
             <Input
               type="text"
               onChange={(e) => setNewName(e.target.value)}
               placeholder="New Category Name"
-              defaultValue={name}
+              value={newName}
             />
-            <div className="mt-2 flex justify-end">
+            <div
+              className="mt-2 flex w-full justify-end"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button type="submit" variant={"alternative"}>
                 {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
               </Button>
@@ -91,7 +107,15 @@ export default function CRUDButtons({
       </Dialog>
       <Dialog open={openDeleteModal} onOpenChange={setOpenDeleteModal}>
         <DialogTrigger asChild>
-          <Button variant={"link"} className="h-fit p-0">
+          <Button
+            variant={"link"}
+            className="h-fit p-0"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpenDeleteModal(true);
+            }}
+          >
             <TrashIcon size={18} className="cursor-pointer" />
           </Button>
         </DialogTrigger>
@@ -105,13 +129,25 @@ export default function CRUDButtons({
           </DialogHeader>
           <div className="flex justify-end gap-3">
             <DialogClose asChild>
-              <Button variant={"secondary"}>Cancel</Button>
+              <Button
+                variant={"secondary"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+              >
+                Cancel
+              </Button>
             </DialogClose>
             <Button
-              type="submit"
+              type="button"
               variant={"alternative"}
               disabled={deleteLoading}
-              onClick={() => handleDeleteCategory()}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleDeleteCategory();
+              }}
             >
               {deleteLoading ? (
                 <LoaderCircle className="animate-spin" size={18} />

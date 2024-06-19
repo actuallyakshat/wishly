@@ -34,6 +34,14 @@ export default function AddCategoryDialog({
       if (name === "") {
         setError("Category name is required");
       }
+      const existingCategoryName = user?.categories.find(
+        (c) => c.name.toLowerCase() === name.toLowerCase(),
+      );
+      if (existingCategoryName) {
+        toast.error("Category already exists", { id: "create-category" });
+        setLoading(false);
+        return;
+      }
       toast.loading("Creating category", { id: "create-category" });
       await addCategory(name, user!.id);
       if (refresh) await refresh();

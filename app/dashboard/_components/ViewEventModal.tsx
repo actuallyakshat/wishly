@@ -19,6 +19,7 @@ export default function ViewEventModal({
   event: EventWithCategory;
 }) {
   const { user } = useClientAuth();
+  console.log(event);
   return (
     <Dialog>
       <DialogTrigger asChild>

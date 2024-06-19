@@ -16,8 +16,10 @@ export default function SearchLayout({
   >([]);
   React.useEffect(() => {
     if (searchQuery) {
-      const filteredEvents = events.filter((event) =>
-        event.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      const filteredEvents = events.filter(
+        (event) =>
+          event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          event.description?.toLowerCase().includes(searchQuery.toLowerCase()),
       );
       setFilteredEvents(filteredEvents);
       setSearchQuery(searchQuery);

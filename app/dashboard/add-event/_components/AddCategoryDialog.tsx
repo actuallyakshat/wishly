@@ -1,13 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useClientAuth } from "@/providers/auth-provider";
@@ -55,19 +58,19 @@ export default function AddCategoryDialog({
     }
   }
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>
         <Button className="w-full py-1" variant={"ghost"}>
           Create new category
         </Button>
-      </DialogTrigger>
-      <DialogContent className="pb-4 pt-6">
-        <DialogHeader>
-          <DialogTitle>Create new category</DialogTitle>
-          <DialogDescription>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="pb-4 pt-6">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Create new category</AlertDialogTitle>
+          <AlertDialogDescription>
             Create a new category so that you can organise your events better.
-          </DialogDescription>
-        </DialogHeader>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
         <form className="mt-3" onSubmit={(e) => handleCreateCategory(e)}>
           <div className="space-y-3">
             <Label>Category Name</Label>
@@ -77,13 +80,18 @@ export default function AddCategoryDialog({
               onChange={(e) => setName(e.target.value)}
             />
             <div className="mt-1 flex w-full items-center justify-end">
-              <Button type="submit" variant={"alternative"} disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full"
+                variant={"alternative"}
+                disabled={loading}
+              >
                 {loading ? <LoaderCircle className="animate-spin" /> : "Create"}
               </Button>
             </div>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

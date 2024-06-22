@@ -36,6 +36,7 @@ export default function AddCategoryDialog({
     try {
       if (name === "") {
         setError("Category name is required");
+        return;
       }
       const existingCategoryName = user?.categories.find(
         (c) => c.name.toLowerCase() === name.toLowerCase(),

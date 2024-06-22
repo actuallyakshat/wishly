@@ -45,6 +45,11 @@ export default function AddEventForm() {
 
     try {
       await addEvent(payload, user!.id);
+      setEventTitle("");
+      setEventDescription("");
+      setEventDate(undefined);
+      setEventCategory(null);
+      setRecurring(true);
       toast.success("Event added successfully");
     } catch (error) {
       console.error(error);
@@ -58,7 +63,7 @@ export default function AddEventForm() {
       className="flex max-w-sm flex-col gap-6 py-3"
       onSubmit={(e) => handleSubmit(e)}
     >
-      <EventTitle setEventTitle={setEventTitle} />
+      <EventTitle setEventTitle={setEventTitle} eventTitle={eventTitle} />
       <Description
         description={eventDescription}
         setEventDescription={setEventDescription}

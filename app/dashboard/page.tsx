@@ -1,5 +1,5 @@
 import React from "react";
-import UpcomingEvents from "./_components/UpcomingEvents";
+import EventsThisMonth from "./_components/EventsThisMonth";
 import AllEvents from "./_components/AllEvents";
 import { currentUser } from "@clerk/nextjs/server";
 import { getUserId } from "./_actions/actions";
@@ -33,7 +33,7 @@ export default async function Dashboard() {
 
   return (
     <main className="flex flex-col gap-8 p-12">
-      <UpcomingEvents data={eventsThisMonth} />
+      <EventsThisMonth data={eventsThisMonth} />
       <EventsByCategory data={eventsbycategory} />
       <AllEvents allEvents={allEvents} />
     </main>

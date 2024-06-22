@@ -3,14 +3,14 @@ import React from "react";
 import EventCard from "./EventCard";
 import { EventWithCategory } from "@/lib/types";
 
-export default function UpcomingEvents({
+export default function EventsThisMonth({
   data,
 }: {
   data: EventWithCategory[] | [];
 }) {
   return (
     <section>
-      <h1 className="text-2xl font-semibold">Upcoming This Month</h1>
+      <h1 className="text-2xl font-semibold">Events This Month</h1>
       <h4 className="text-sm text-muted-foreground">
         Events that are on your calendar this month.
       </h4>

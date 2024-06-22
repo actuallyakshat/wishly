@@ -3,6 +3,7 @@ import Navbar from "./_components/Navbar";
 import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { GithubIcon } from "lucide-react";
 
 const headingGradient =
   "bg-gradient-to-br from-lime-400 to-lime-600 text-transparent bg-clip-text inline-block";
@@ -16,19 +17,32 @@ export default async function Home() {
         <div className="col-span-2 flex flex-col items-center justify-center gap-4 xl:col-span-1 xl:items-start xl:pl-20">
           <h1 className="max-w-xl text-center text-5xl font-black leading-[1.10] md:text-7xl xl:text-start">
             <span className={`${headingGradient} mr-2`}>We Remember, </span>
-            So That You
-            <span className={`${headingGradient} ml-2`}>
-              Don&apos;t Have To.
-            </span>
+            So That <span className="mr-2">You</span>
+            <span className={`${headingGradient}`}>Don&apos;t Have To.</span>
           </h1>
           <p className="max-w-lg text-center text-lg font-medium text-muted-foreground xl:text-start">
             Wishly helps you set reminder for those special days you can&apos;t
             afford to forget. Get started today for free.
           </p>
-          <div className="flex items-center justify-center xl:justify-start">
-            <Link href={user ? "/dashboard" : "/sign-up"} className="w-full">
-              <Button className="w-fit" variant={"alternative"}>
+          <div className="flex w-full items-center justify-center gap-3 xl:justify-start">
+            <Link
+              href={user ? "/dashboard" : "/sign-up"}
+              className="w-full max-w-[300px]"
+            >
+              <Button className="w-full max-w-[300px]" variant={"alternative"}>
                 {user ? "Dashboard" : "Get Started"}
+              </Button>
+            </Link>
+            <Link
+              target="_blank"
+              href={"https://github.com/actuallyakshat/wishly"}
+              className="w-full max-w-[300px]"
+            >
+              <Button
+                className="flex w-full max-w-[300px] items-center justify-center gap-2"
+                variant={"default"}
+              >
+                Github <GithubIcon />
               </Button>
             </Link>
           </div>

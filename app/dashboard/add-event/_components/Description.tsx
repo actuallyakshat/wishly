@@ -20,6 +20,7 @@ export default function Description({
       </div>
       <Textarea
         maxLength={120}
+        value={description}
         placeholder="Event Description (Optional)"
         onChange={(e) => setEventDescription(e.target.value)}
       />

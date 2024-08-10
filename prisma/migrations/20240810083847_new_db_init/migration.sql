@@ -21,7 +21,10 @@ CREATE TABLE "Event" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "categoryId" INTEGER,
     "disableReminder" BOOLEAN NOT NULL DEFAULT false,
-    "reccuring" BOOLEAN NOT NULL DEFAULT false,
+    "reccuring" BOOLEAN NOT NULL DEFAULT true,
+    "reminderSentWeekBefore" BOOLEAN NOT NULL DEFAULT false,
+    "reminderSentDayBefore" BOOLEAN NOT NULL DEFAULT false,
+    "reminderSentOnDay" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
 );
